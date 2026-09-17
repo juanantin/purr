@@ -6,20 +6,36 @@
 <title>PURRINTER — hold $PURR, earn $BASECAT</title>
 <meta name="description" content="PURRINTER, the printer that goes purrrrr on $BASECAT. 1,000,000,000 $PURR on Base. Every trade routes fees to the rewards index — hold $PURR and earn $BASECAT.">
 
-<!-- The social card. ⚠ TO BE FILLED once this repo has a deployment URL.
-     Both the image and og:url must be ABSOLUTE — a scraper fetches them from
-     its own servers with no page to resolve a relative path against, which is
-     the usual reason a shared link renders blank. They are left out rather
-     than pointed at a sibling project's domain, which would put another
-     token's artwork on this token's card.
+<!-- The social card. Three things here are not stylistic:
 
-     The image wants to be 1200×630. A 3:1 banner is not a card shape: X crops
-     a large-image card to 2:1, taking the SIDES off anything wider, which on
-     the sibling site would have cut its wordmark in half. Letterbox onto
-     1200×630 rather than cropping. -->
+     ABSOLUTE URLs. A scraper fetches these from its own servers, with no page
+     to resolve a relative path against — a relative og:image is the usual
+     reason a shared link renders with a blank space where the art should be.
+
+     1200×630, which every platform documents and none of them cuts into. The
+     launch banner is 3:1, and a card is not: X crops a large-image card to
+     2:1, and because the banner is WIDER than that the crop takes the SIDES —
+     here the printer off one end and "PRINTING BASECAT" off the other.
+     images/social.jpg is that same banner, uncropped, letterboxed onto
+     1200×630 on a ground sampled from its own border.
+
+     And twitter:image is stated rather than left to fall back to og:image.
+     The fallback is real but not universal, and writing it down costs a line.
+-->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="PURRINTER">
+<meta property="og:url" content="https://purr-puce.vercel.app/">
+<meta property="og:title" content="PURRINTER — $PURR">
+<meta property="og:description" content="Hold $PURR, earn $BASECAT. 1B total supply on Base chain.">
+<meta property="og:image" content="https://purr-puce.vercel.app/images/social.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PURRINTER: a blue cat-eared printer printing $BASECAT coins, on Base.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@purrinter_base">
+<meta name="twitter:image" content="https://purr-puce.vercel.app/images/social.jpg">
+<meta name="twitter:image:alt" content="PURRINTER: a blue cat-eared printer printing $BASECAT coins, on Base.">
 <meta name="theme-color" content="#fcfcfc">
 
 <!-- favicon.ico sits at the root because browsers request /favicon.ico on
@@ -32,10 +48,10 @@
 
      The ?v= below is what makes a browser let go of the icon it has cached;
      node scripts/stamp.mjs moves all of them together. -->
-<link rel="icon" href="favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="images/favicon.png?v=2">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=2">
-<link rel="manifest" href="site.webmanifest?v=2">
+<link rel="icon" href="favicon.ico?v=4" sizes="any">
+<link rel="icon" type="image/png" href="images/favicon.png?v=4">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=4">
+<link rel="manifest" href="site.webmanifest?v=4">
 
 <!-- One face, four weights: the design separates label from figure by weight
      and colour, so the family has to carry 400 through 700.
@@ -53,70 +69,9 @@
       media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
 
-<link rel="stylesheet" href="assets/css/styles.css?v=2">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
 <body>
-
-<!-- The banner's cubes, let loose behind the whole page. Purely decorative:
-     hidden from assistive tech and transparent to pointers.
-
-     Each cube's lane, depth, size, speed, drift, spin and (negative) start
-     offset lives in these custom properties, so the stylesheet needs no
-     24-way nth-child. --y places it down the DOCUMENT, not the viewport:
-     the layer scrolls with the page, and --depth is how far each one lags
-     behind it. -->
-<div class="cubes" aria-hidden="true">
-  <i style="--x:1.1vw;--y:-4.3%;--s:20px;--depth:0.19;--d:32.2s;--delay:-12.4s;--drift:32px;--spin:360deg;--o:0.52"></i>
-  <i class="is-green" style="--x:5.3vw;--y:2.3%;--s:32px;--depth:0.1;--d:16.2s;--delay:-4.0s;--drift:40px;--spin:180deg;--o:0.48"></i>
-  <i style="--x:8.8vw;--y:3.6%;--s:36px;--depth:0.08;--d:21.7s;--delay:-5.6s;--drift:15px;--spin:-270deg;--o:0.36"></i>
-  <i style="--x:14.9vw;--y:7.2%;--s:40px;--depth:0.06;--d:21.1s;--delay:-15.5s;--drift:-34px;--spin:360deg;--o:0.57"></i>
-  <i class="is-green" style="--x:17.0vw;--y:14.5%;--s:16px;--depth:0.22;--d:17.8s;--delay:-2.6s;--drift:32px;--spin:270deg;--o:0.36"></i>
-  <i style="--x:21.8vw;--y:18.4%;--s:32px;--depth:0.1;--d:26.4s;--delay:-11.5s;--drift:24px;--spin:180deg;--o:0.44"></i>
-  <i style="--x:25.4vw;--y:22.8%;--s:28px;--depth:0.13;--d:16.4s;--delay:-10.8s;--drift:29px;--spin:270deg;--o:0.35"></i>
-  <i class="is-green" style="--x:29.6vw;--y:26.0%;--s:36px;--depth:0.08;--d:23.2s;--delay:-12.3s;--drift:-18px;--spin:180deg;--o:0.62"></i>
-  <i style="--x:35.3vw;--y:29.4%;--s:20px;--depth:0.19;--d:30.5s;--delay:-21.8s;--drift:18px;--spin:-360deg;--o:0.62"></i>
-  <i style="--x:39.8vw;--y:32.5%;--s:36px;--depth:0.08;--d:28.7s;--delay:-25.7s;--drift:-7px;--spin:-360deg;--o:0.58"></i>
-  <i class="is-green" style="--x:43.5vw;--y:38.3%;--s:40px;--depth:0.06;--d:17.8s;--delay:-16.8s;--drift:-22px;--spin:360deg;--o:0.57"></i>
-  <i style="--x:47.9vw;--y:42.4%;--s:28px;--depth:0.13;--d:17.5s;--delay:-11.7s;--drift:3px;--spin:-360deg;--o:0.42"></i>
-  <i style="--x:51.1vw;--y:48.0%;--s:40px;--depth:0.06;--d:32.6s;--delay:-12.4s;--drift:31px;--spin:-180deg;--o:0.57"></i>
-  <i class="is-green" style="--x:54.8vw;--y:49.5%;--s:16px;--depth:0.22;--d:20.1s;--delay:-9.4s;--drift:-21px;--spin:270deg;--o:0.52"></i>
-  <i style="--x:60.2vw;--y:55.3%;--s:16px;--depth:0.22;--d:20.1s;--delay:-13.6s;--drift:-31px;--spin:-180deg;--o:0.53"></i>
-  <i style="--x:64.6vw;--y:59.8%;--s:28px;--depth:0.13;--d:23.1s;--delay:-8.2s;--drift:-18px;--spin:360deg;--o:0.35"></i>
-  <i class="is-green" style="--x:68.4vw;--y:65.9%;--s:36px;--depth:0.08;--d:18.8s;--delay:-9.7s;--drift:34px;--spin:-180deg;--o:0.57"></i>
-  <i style="--x:73.2vw;--y:65.7%;--s:32px;--depth:0.1;--d:28.0s;--delay:-19.4s;--drift:-23px;--spin:-180deg;--o:0.64"></i>
-  <i style="--x:77.7vw;--y:71.0%;--s:20px;--depth:0.19;--d:20.7s;--delay:-7.9s;--drift:-22px;--spin:180deg;--o:0.62"></i>
-  <i class="is-green" style="--x:80.0vw;--y:76.6%;--s:24px;--depth:0.16;--d:23.3s;--delay:-11.5s;--drift:28px;--spin:180deg;--o:0.5"></i>
-  <i style="--x:85.1vw;--y:79.0%;--s:20px;--depth:0.19;--d:32.3s;--delay:-9.4s;--drift:-20px;--spin:-180deg;--o:0.64"></i>
-  <i style="--x:90.0vw;--y:82.3%;--s:40px;--depth:0.06;--d:34.0s;--delay:-27.8s;--drift:3px;--spin:-360deg;--o:0.4"></i>
-  <i class="is-green" style="--x:94.1vw;--y:87.8%;--s:24px;--depth:0.16;--d:26.4s;--delay:-11.3s;--drift:-39px;--spin:270deg;--o:0.62"></i>
-  <i style="--x:97.4vw;--y:91.1%;--s:36px;--depth:0.08;--d:26.6s;--delay:-10.0s;--drift:-21px;--spin:360deg;--o:0.54"></i>
-</div>
-
-<script>
-  (function () {
-    var layer = document.querySelector('.cubes');
-    if (!layer || !window.matchMedia) return;
-    // Same bargain as the trailer: decoration is the first thing to go.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    /* One custom property for the whole layer, read by every cube's own
-       --depth. Written inside requestAnimationFrame so a fast scroll sets it
-       once per frame instead of once per event, and the property only ever
-       feeds a transform, so nothing here can force layout. */
-    var pending = false;
-    function update() {
-      pending = false;
-      layer.style.setProperty('--scroll', window.pageYOffset + 'px');
-    }
-    addEventListener('scroll', function () {
-      if (pending) return;
-      pending = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    addEventListener('resize', update, { passive: true });
-    update();
-  })();
-</script>
 
 <!-- ===================== HERO ===================== -->
 <header class="hero">
@@ -127,18 +82,16 @@
          flush at the top with no seam. -->
     <h1 class="sr-only">PURRINTER — hold $PURR, earn $BASECAT</h1>
 
-    <!-- ⚠ PLACEHOLDER. No artwork yet, so the poster stands alone as a still
-         header — which is also exactly what a reduced-motion viewer gets.
-         When the banner lands: drop the mp4 in images/, point data-src at it,
-         make the poster the clip's OWN FIRST FRAME (or the hand-off from
-         poster to playback jumps), strip the audio track, and set the
-         width/height here AND the hero's aspect-ratio in the stylesheet to
-         its real shape — the ratio is encoded twice and object-fit crops
-         silently when the two disagree. -->
+    <!-- A still, because the artwork is a still: the token launched with a
+         2172×724 banner and no clip. The element stays a <video> so that
+         adding one later is a data-src away — point it at an mp4 whose FIRST
+         FRAME is this poster, or the hand-off jumps. The 3:1 is written here
+         and again as the hero's aspect-ratio in the stylesheet; change both
+         together or object-fit crops silently. -->
     <video
       class="hero__media" id="hero-video"
       poster="images/banner_poster.webp"
-      width="960" height="304"
+      width="1440" height="480"
       autoplay muted loop playsinline preload="none"
       aria-label="PURRINTER — the printer that goes purrrrr on $BASECAT."></video>
 
@@ -393,7 +346,7 @@
 <!-- ?v= is the cache buster: run `node scripts/stamp.mjs` on every deploy,
      which moves every ?v= here and `version` in config.js together. Skip it
      and a CDN keeps serving the previous config.js and app.js. -->
-<script src="config.js?v=2"></script>
-<script src="assets/js/app.js?v=2"></script>
+<script src="config.js?v=4"></script>
+<script src="assets/js/app.js?v=4"></script>
 </body>
 </html>

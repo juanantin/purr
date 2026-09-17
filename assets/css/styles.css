@@ -1,10 +1,14 @@
 /* ==========================================================================
    Styles
 
-   ⚠ THE PALETTE IS STILL THE SIBLING SITE'S. --page is meant to be SAMPLED
-   FROM THE BANNER — that match is what lets the hero sit flush at the top
-   with no seam — and --accent from the artwork's own dominant colour. Resample
-   both when the artwork lands; until then these are a neutral stand-in.
+   --accent is the logo's own blue, #0038F0, read off the mark rather than
+   guessed.
+
+   --page is NOT sampled from the banner here, and that is a departure worth
+   naming. The rule exists so a hero with a flat ground can bleed into the
+   page with no seam; this banner has no single ground — blue sky at the top,
+   a pale floor at the bottom — so there is nothing to match. It reads as a
+   framed image instead, which is what it is.
 
    No radius anywhere: right angles are the whole of the pixel-art idea, and
    depth comes from --stack, a shadow drawn as two offset blocks with no blur
@@ -21,10 +25,10 @@
   --line:        #e3e8f2;
   --line-strong: #ccd6e6;
 
-  /* The bull's own blue, sampled from the clip */
-  --accent:      #0b53e8;
-  --accent-deep: #0a3ca6;
-  --accent-soft: #e3ecfe;
+  /* The logo's own blue */
+  --accent:      #0038f0;
+  --accent-deep: #0a2ba8;
+  --accent-soft: #e0e7ff;
 
   --base-blue:   #0052ff;
 
@@ -112,90 +116,6 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ==========================================================================
-   Falling cubes — the artwork's own confetti, behind everything
-
-   The banner is a voxel bull in a field of drifting cubes, and the page
-   already carries a static isometric tile; these are the same shapes let
-   loose. Decorative in the strict sense: aria-hidden, pointer-events: none,
-   and nothing on the page depends on them.
-
-   ABSOLUTE, not fixed. Fixed was the first version and it was wrong: the
-   cubes hung in the viewport like dust on the lens, going nowhere while the
-   page moved under them. Anchored to the document they belong to the page —
-   they scroll with it, and each one then lags by its own --depth, so the
-   field has some thickness instead of being one flat sheet.
-
-   z-index: -1 puts the layer above the body's own background and behind all
-   in-flow content, so the opaque cards hide the cubes and they read in the
-   gutters rather than under the figures.
-
-   Two transforms, composed by nesting rather than fighting over one property:
-   the <i> carries the scroll parallax, its ::before carries the drift. A
-   single element cannot do both, because an animation owns `transform`
-   outright for as long as it runs.
-   ========================================================================== */
-
-:root {
-  --cube-blue:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 28'><path d='M12 1 23 7.5 12 14 1 7.5Z' fill='%235b8ff5'/><path d='M1 7.5 12 14v13L1 20.5Z' fill='%230b53e8'/><path d='M23 7.5 12 14v13l11-6.5Z' fill='%230a3ca6'/></svg>");
-  --cube-green: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 28'><path d='M12 1 23 7.5 12 14 1 7.5Z' fill='%236fdc9a'/><path d='M1 7.5 12 14v13L1 20.5Z' fill='%232fbf6a'/><path d='M23 7.5 12 14v13l11-6.5Z' fill='%231c8f4e'/></svg>");
-  /* Set by the scroll handler in index.html; 0 until then, and forever if
-     that script never runs, which just means no parallax. */
-  --scroll: 0px;
-}
-
-.cubes {
-  position: absolute;
-  inset: 0;              /* the body's full height, however tall the page is */
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.cubes i {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  display: block;
-  width: var(--s);
-  height: calc(var(--s) * 1.1667);   /* the cube SVG's own 24:28 */
-  /* The parallax. A cube shifted DOWN by a fraction of the scroll position
-     appears to scroll slower than the text beside it — near cubes keep pace,
-     far ones drag. */
-  transform: translate3d(0, calc(var(--scroll) * var(--depth)), 0);
-}
-
-.cubes i::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: center / contain no-repeat var(--cube-blue);
-  animation: cube-drift var(--d) linear var(--delay) infinite;
-}
-
-.cubes i.is-green::before { background-image: var(--cube-green); }
-
-/* Falls a short way and fades out at both ends, so the loop has no seam: a
-   cube that simply jumped back to its start would flicker once per cycle,
-   and at these durations that is the only thing the eye would catch. */
-@keyframes cube-drift {
-  0%   { transform: translate3d(0, -70px, 0) rotate(0deg); opacity: 0; }
-  14%  { opacity: var(--o); }
-  86%  { opacity: var(--o); }
-  100% { transform: translate3d(var(--drift), 210px, 0) rotate(var(--spin)); opacity: 0; }
-}
-
-/* Decoration is the first thing to go when someone asks for less motion. */
-@media (prefers-reduced-motion: reduce) {
-  .cubes { display: none; }
-}
-
-/* Thinner on a phone: the same count in a third of the width reads as weather
-   rather than as a few cubes drifting past. */
-@media (max-width: 620px) {
-  .cubes i:nth-child(3n) { display: none; }
-}
-
-/* ==========================================================================
    Hero
    ========================================================================== */
 
@@ -213,9 +133,9 @@ a { color: inherit; text-decoration: none; }
   display: block;
   width: 100%;
   height: auto;          /* beats the element's height attribute */
-  aspect-ratio: 60 / 19; /* 960×304 — the clip's own ratio, and the poster's.
-                            Encoded here as well as on the element, so change
-                            both together or object-fit will crop. */
+  aspect-ratio: 3 / 1;   /* the banner's own ratio, and the poster's. Encoded
+                            here as well as on the element, so change both
+                            together or object-fit will crop. */
   object-fit: cover;
   background: var(--page);
 }
