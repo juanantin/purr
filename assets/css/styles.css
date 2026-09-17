@@ -120,17 +120,30 @@ a { color: inherit; text-decoration: none; }
    on the RIGHT and sky on the left, so the type takes the left half and the
    machine is never covered.
 
-   The frame runs at the clip's own 3:2 and is NEVER cropped. It was capped
-   at 76vh first, and the cap has to go: the clip carries a small BASE mark in
-   its top-left corner, and a vertical crop eats it — but only at some sizes,
-   because a vh cap depends on the window's HEIGHT. Between roughly 1030 and
-   1140px wide the crop lands part-way through that mark and serves a clipped
-   fragment of it. Uncropped, the corner mark is either there or the layout is
-   the phone one; there is no width at which it is half there.
+   The frame is 2.2:1, cropping the clip's 3:2 — and the ratio is FIXED, with
+   no cap in vh or px. That is the whole trick. A vh cap crops by an amount
+   that depends on the window's HEIGHT, and a px cap by an amount that depends
+   on its width, so either one slides the crop around as the viewport changes.
+   This clip cannot take a sliding crop, because of what is in it.
 
-   The cost is a tall header on a wide monitor — 3:2 at 1440px is 960px — and
-   that is the mockup's own proportion rather than an accident of this
-   stylesheet.
+   Measured off images/hero_poster.webp, which is frame 0, as fractions of its
+   448px height:
+
+     BASE mark, top-left corner   4.9% – 9.4%
+     the cat's ear tips           from 32%
+     the coin pile                62% – 96%
+
+   A fixed ratio crops a fixed 15.9% off each side, which is the only band
+   that works: past 9.4% the corner mark is gone COMPLETELY rather than served
+   as a sliced fragment — which is what a 76vh cap did between roughly 1030
+   and 1140px wide — and well short of 32%, so the ears, the thing that makes
+   the machine a cat, are never touched. The bottom 15.9% is the floor and the
+   lowest coins, and the pile reading off the edge is how the artwork meets
+   the dashboard.
+
+   It also means the page draws no BASE mark of its own up there: on a phone
+   the clip is uncropped and carries its own, and two would be worse than
+   none.
    ========================================================================== */
 
 .hero { position: relative; }
@@ -138,9 +151,8 @@ a { color: inherit; text-decoration: none; }
 .hero__frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 2;    /* the clip's own ratio — written here and on the
-                             element; change both together or object-fit
-                             starts cropping */
+  aspect-ratio: 2.2 / 1;  /* see above: fixed, so the crop cannot slide onto
+                             the corner mark or the ears */
   overflow: hidden;
   /* The sky's own blue, so the frame is never a white flash before the
      poster decodes. */
@@ -351,43 +363,53 @@ a { color: inherit; text-decoration: none; }
    the mockup does.
    ------------------------------------------------------------------------ */
 @media (min-width: 761px) {
-  .hero__copy { padding-bottom: 8vw; }
+  /* --hero-scale is the one number that sizes the whole overlay. Every length
+     below is a vw multiplied through it, so the composition stays one drawing
+     at every width AND the whole thing gets bigger or smaller from this line
+     alone — no re-tuning nine values and hoping they still agree.
 
-  /* Artwork-scale type: pure vw, no floor. It is lettering ON a picture and
-     it should behave like part of the picture. */
-  .hero__wordmark { font-size: 6.25vw; }
-  .hero__tagline  { font-size: 1.85vw; margin-top: 1vw; }
-  /* The one floor among the artwork-scale type: this is the only sentence
-     on the hero anyone has to READ, and pure 1.46vw put it at 11px on an
-     800px window. */
-  .hero__lede     { font-size: clamp(13px, 1.46vw, 40px); margin-top: 1.5vw; }
+     1 is the mockup read against the viewport: 6.25vw is its own 64px at its
+     own 1024px width. .8 is what it wants once the band is cropped to 2.2:1
+     rather than left at the mockup's 3:2 — the type is sized off the WIDTH
+     and the band lost a third of its HEIGHT, so at 1 the wordmark came out
+     at 14% of the frame where the mockup has it at 10%.
+
+     Floors, no ceilings. A ceiling would stop a control growing while the
+     artwork behind it kept going, which is the drift this block exists to
+     prevent; the floors are there because 1.46vw is 11px on an 800px window
+     and a label is for reading. */
+  :root { --hero-scale: .8; }
+
+  .hero__copy { padding-bottom: 5.5vw; }   /* 12% of the frame's height */
+
+  /* Artwork-scale type */
+  .hero__wordmark { font-size: calc(6.25vw * var(--hero-scale)); }
+  .hero__tagline  { font-size: calc(1.85vw * var(--hero-scale)); margin-top: calc(1vw * var(--hero-scale)); }
+  .hero__lede     { font-size: max(13px, calc(1.46vw * var(--hero-scale))); margin-top: calc(1.5vw * var(--hero-scale)); }
 
   .hero__copy .rule {
-    width: 5vw;
-    height: .49vw;
-    min-height: 4px;
-    margin-top: 1.3vw;
+    width: calc(5vw * var(--hero-scale));
+    height: max(4px, calc(.49vw * var(--hero-scale)));
+    margin-top: calc(1.3vw * var(--hero-scale));
   }
 
-  /* Controls, and a floor on every one of them. These are things to read and
-     press, not brushwork: at 820px a bare .98vw label computes to 8px, and
-     the first version of this block shipped a 6.6px button label and a 38px
-     tap target. The floors bind only under about 1100px — at and above the
-     mockup's own 1024 the ratios are what carry. */
-  .hero__onchain { font-size: clamp(10px, 1.07vw, 16px); gap: clamp(8px, .9vw, 14px); }
-  .hero__onchain i { width: clamp(20px, 2.1vw, 34px); height: clamp(2px, .22vw, 4px); }
+  /* Controls, with a floor on every one of them: these are things to read and
+     press, not brushwork. The first pass at this block shipped a 6.6px button
+     label and a 38px tap target at 820px. */
+  .hero__onchain { font-size: max(10px, calc(1.07vw * var(--hero-scale))); gap: max(8px, calc(.9vw * var(--hero-scale))); }
+  .hero__onchain i { width: max(20px, calc(2.1vw * var(--hero-scale))); height: max(2px, calc(.22vw * var(--hero-scale))); }
 
-  .actions { gap: clamp(8px, .78vw, 12px); margin-top: 2vw; }
+  .actions { gap: max(8px, calc(.78vw * var(--hero-scale))); margin-top: calc(2vw * var(--hero-scale)); }
 
   .btn {
-    min-width: clamp(92px, 9vw, 150px);
-    min-height: clamp(62px, 6vw, 100px);
-    padding: clamp(10px, .9vw, 16px) clamp(12px, 1.1vw, 20px);
-    gap: clamp(6px, .6vw, 10px);
+    min-width: max(92px, calc(9vw * var(--hero-scale)));
+    min-height: max(60px, calc(6vw * var(--hero-scale)));
+    padding: max(10px, calc(.9vw * var(--hero-scale))) max(12px, calc(1.1vw * var(--hero-scale)));
+    gap: max(6px, calc(.6vw * var(--hero-scale)));
   }
 
-  .btn__icon  { width: clamp(19px, 1.95vw, 30px); height: clamp(19px, 1.95vw, 30px); }
-  .btn__label { font-size: clamp(10.5px, .98vw, 15px); }
+  .btn__icon  { width: max(19px, calc(1.95vw * var(--hero-scale))); height: max(19px, calc(1.95vw * var(--hero-scale))); }
+  .btn__label { font-size: max(10.5px, calc(.98vw * var(--hero-scale))); }
 }
 
 /* ==========================================================================
