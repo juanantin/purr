@@ -48,10 +48,10 @@
 
      The ?v= below is what makes a browser let go of the icon it has cached;
      node scripts/stamp.mjs moves all of them together. -->
-<link rel="icon" href="favicon.ico?v=9" sizes="any">
-<link rel="icon" type="image/png" href="images/favicon.png?v=9">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=9">
-<link rel="manifest" href="site.webmanifest?v=9">
+<link rel="icon" href="favicon.ico?v=10" sizes="any">
+<link rel="icon" type="image/png" href="images/favicon.png?v=10">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=10">
+<link rel="manifest" href="site.webmanifest?v=10">
 
 <!-- One face, five weights. 800 is not decoration: the wordmark and the
      section headings are set in it, and Inter's 700 is visibly lighter than
@@ -71,7 +71,7 @@
       media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 
-<link rel="stylesheet" href="assets/css/styles.css?v=9">
+<link rel="stylesheet" href="assets/css/styles.css?v=10">
 </head>
 <body>
 
@@ -93,8 +93,8 @@
 
     <video
       class="hero__media" id="hero-video"
-      poster="images/hero_poster.webp?v=9"
-      data-src="images/purr_header.mp4?v=9"
+      poster="images/hero_poster.webp?v=10"
+      data-src="images/purr_header.mp4?v=10"
       width="672" height="448"
       autoplay muted loop playsinline preload="none"
       aria-label="PURRINTER — the printer that goes purrrrr on $BASECAT."></video>
@@ -135,17 +135,17 @@
              the page. "Onchain together" is the half that is not in the
              picture, so it is the half that gets written. -->
         <div class="hero__eyebrow">
-          <span class="hero__onchain">Onchain together<i aria-hidden="true"></i></span>
+          <span class="hero__onchain" data-rise>Onchain together<i aria-hidden="true"></i></span>
         </div>
 
         <div class="hero__copy">
-          <h1 class="hero__wordmark">PURRINTER</h1>
+          <h1 class="hero__wordmark" data-rise>PURRINTER</h1>
 
-          <p class="hero__tagline">Printing Basecat<br>A brighter Base</p>
+          <p class="hero__tagline" data-rise>Printing Basecat<br>A brighter Base</p>
 
-          <span class="rule" aria-hidden="true"></span>
+          <span class="rule" aria-hidden="true" data-rise></span>
 
-          <p class="hero__lede">Trade. Generate fees.<br>Holders earn $BASECAT.<br>Simple as that.</p>
+          <p class="hero__lede" data-rise>Trade. Generate fees.<br>Holders earn $BASECAT.<br>Simple as that.</p>
 
           <!-- ===================== ACTIONS ===================== -->
           <!-- Icon-only. The names do not disappear with the labels, they
@@ -154,7 +154,7 @@
                "button", and title= gives a sighted visitor the same word on
                hover. A control that announces nothing is unusable without
                sight, and the clipboard square is the one nobody can guess. -->
-          <nav class="actions" aria-label="Token links">
+          <nav class="actions" aria-label="Token links" data-rise>
 
             <a class="btn" id="link-x" href="https://x.com/purrinter_base" title="X (Twitter)" target="_blank" rel="noopener noreferrer">
               <!-- The X mark, drawn as a filled glyph rather than loaded as an image -->
@@ -326,7 +326,7 @@
             </svg>
           </span>
           <h2 class="step__title">Trade</h2>
-          <p class="step__text">Every buy and sell<br>generates fees.</p>
+          <p class="step__text">Every buy and sell generates fees.</p>
         </li>
 
         <li class="step">
@@ -341,7 +341,7 @@
             </svg>
           </span>
           <h2 class="step__title">Purrint</h2>
-          <p class="step__text">Fees are converted<br>into $BASECAT rewards.</p>
+          <p class="step__text">Fees are converted into $BASECAT rewards.</p>
         </li>
 
         <li class="step">
@@ -358,7 +358,7 @@
             </svg>
           </span>
           <h2 class="step__title">Earn</h2>
-          <p class="step__text">Holders receive<br>$BASECAT automatically.</p>
+          <p class="step__text">Holders receive $BASECAT automatically.</p>
         </li>
 
       </ol>
@@ -378,7 +378,7 @@
     <!-- WebP, not the supplied PNG: same 2172×724, 111KB against 1.69MB.
          alt="" because the type over it says everything it says — a screen
          reader that announced it as well would read the slogan twice. -->
-    <img class="foot__img" src="images/footer.webp?v=9" alt=""
+    <img class="foot__img" src="images/footer.webp?v=10" alt=""
          width="2172" height="724" loading="lazy" decoding="async">
 
     <!-- Everything below sits ON the artwork: the two slogans up where the
@@ -414,10 +414,62 @@
 
 </footer>
 
+<!-- Entrance animations.
+
+     Everything is VISIBLE by default and this script opts in, rather than the
+     stylesheet hiding things and the script revealing them. That order is the
+     whole safety of it: no JS, an old browser, a thrown exception, an
+     IntersectionObserver that never fires — any of those and the page is
+     simply the page, fully readable. The other way round leaves a blank site.
+
+     It also declines twice over: once here on prefers-reduced-motion, and
+     again in the stylesheet, which flattens every duration under the same
+     query.
+
+     The keyframes animate `translate`, not `transform`. They are separate
+     properties now, and that matters: a finished animation with fill:both
+     keeps ownership of the property it animated, so animating `transform`
+     would beat .stat:hover's own transform and kill every hover lift on the
+     page after the reveal ran. -->
+<script>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var root = document.documentElement;
+    root.classList.add('anim');
+
+    // Above the fold: play immediately, staggered in reading order.
+    var hero = document.querySelectorAll('[data-rise]');
+    Array.prototype.forEach.call(hero, function (el, i) {
+      el.style.setProperty('--d', (i * 70) + 'ms');
+      el.classList.add('is-in');
+    });
+
+    // Below it: play as each group arrives. Staggered within its own group, so
+    // a row of six cards deals itself out rather than landing as one slab.
+    var groups = ['.stat', '.step', '.eco__half', '.foot__left', '.foot__mid'];
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);   // one entrance each, not one per scroll
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
+
+    groups.forEach(function (sel) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el, i) {
+        el.style.setProperty('--d', (i * 80) + 'ms');
+        el.classList.add('rise');
+        io.observe(el);
+      });
+    });
+  })();
+</script>
+
 <!-- ?v= is the cache buster: run `node scripts/stamp.mjs` on every deploy,
      which moves every ?v= here and `version` in config.js together. Skip it
      and a CDN keeps serving the previous config.js and app.js. -->
-<script src="config.js?v=9"></script>
-<script src="assets/js/app.js?v=9"></script>
+<script src="config.js?v=10"></script>
+<script src="assets/js/app.js?v=10"></script>
 </body>
 </html>
