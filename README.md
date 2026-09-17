@@ -1,13 +1,16 @@
-# Token site
+# PURRINTER — $PURR
 
-Single-page site for a Stonkex-launched token: a looping banner, a live
-dashboard, and an ecosystem footer. Static HTML/CSS/JS — no build step, no
-dependencies, no framework.
+Single-page site for $PURR: a looping banner, a live dashboard, and an
+ecosystem footer. Static HTML/CSS/JS — no build step, no dependencies, no
+framework.
 
-⚠ **Being pointed at its token.** The contract address, the X account and the
-Stockify index are set; everything the network has to answer — the pool, the
-reward token and its decimals, the launch block, the fee routing — is null
-until `.github/workflows/discover.yml` has run. See [`SETUP.md`](SETUP.md).
+Holders are paid in **$BASECAT**, the quote side of the pool. Every address
+below was read from the network rather than inherited — see
+[`SETUP.md`](SETUP.md) step 0.
+
+⚠ **Still to land:** the artwork (the placeholders say so) and a deployment
+URL, without which the live-site probe skips itself and nothing has proved
+what a visitor is actually served.
 
 Copied from [`juanantin/blue`](https://github.com/juanantin/blue), which was
 copied from [`juanantin/box`](https://github.com/juanantin/box). Where a lesson
@@ -40,7 +43,7 @@ worker/               the same indexer as a Cloudflare Worker (optional)
 - **Actions** — three buttons under the banner: X, the chart, and a button that
   copies the CA to the clipboard and flashes a `Copied!` confirmation beneath
   itself.
-- **Dashboard** — six live cards: total fees collected, total rewards
+- **Dashboard** — six live cards: total fees collected, total $BASECAT
   distributed (tokens, with the USD figure beneath), number of holders, market
   cap, liquidity and 24h volume. Money carries cents, counts do not. Values blink a
   `…` placeholder until the first load resolves.

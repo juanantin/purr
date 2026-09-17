@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token dashboard</title>   <!-- ⚠ TO BE FILLED from the discovery run -->
-<meta name="description" content="Live dashboard: fees collected, rewards distributed and holders, read from Base.">
+<title>PURRINTER — hold $PURR, earn $BASECAT</title>
+<meta name="description" content="PURRINTER, the printer that goes purrrrr on $BASECAT. 1,000,000,000 $PURR on Base. Every trade routes fees to the rewards index — hold $PURR and earn $BASECAT.">
 
 <!-- The social card. ⚠ TO BE FILLED once this repo has a deployment URL.
      Both the image and og:url must be ABSOLUTE — a scraper fetches them from
@@ -32,10 +32,10 @@
 
      The ?v= below is what makes a browser let go of the icon it has cached;
      node scripts/stamp.mjs moves all of them together. -->
-<link rel="icon" href="favicon.ico?v=17" sizes="any">
-<link rel="icon" type="image/png" href="images/favicon.png?v=17">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=17">
-<link rel="manifest" href="site.webmanifest?v=17">
+<link rel="icon" href="favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" href="images/favicon.png?v=2">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=2">
+<link rel="manifest" href="site.webmanifest?v=2">
 
 <!-- One face, four weights: the design separates label from figure by weight
      and colour, so the family has to carry 400 through 700.
@@ -53,7 +53,7 @@
       media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
 
-<link rel="stylesheet" href="assets/css/styles.css?v=17">
+<link rel="stylesheet" href="assets/css/styles.css?v=2">
 </head>
 <body>
 
@@ -125,7 +125,7 @@
     <!-- The clip carries the wordmark, so the page has no separate top bar.
          Its own background is the page background, which is what lets it sit
          flush at the top with no seam. -->
-    <h1 class="sr-only">Token dashboard</h1>   <!-- ⚠ TO BE FILLED -->
+    <h1 class="sr-only">PURRINTER — hold $PURR, earn $BASECAT</h1>
 
     <!-- ⚠ PLACEHOLDER. No artwork yet, so the poster stands alone as a still
          header — which is also exactly what a reduced-motion viewer gets.
@@ -140,7 +140,7 @@
       poster="images/banner_poster.webp"
       width="960" height="304"
       autoplay muted loop playsinline preload="none"
-      aria-label="Token banner"></video>
+      aria-label="PURRINTER — the printer that goes purrrrr on $BASECAT."></video>
 
     <script>
       (function () {
@@ -207,13 +207,12 @@
   <!-- ===================== DASHBOARD ===================== -->
   <section class="stats" id="stats" aria-label="Live token stats">
 
-    <!-- ⚠ The reward token's ticker goes in this label and the unit below,
-         from the discovery run's symbol() reading — the platform decorates
-         the ticker it wraps, so it is read, never guessed. -->
+    <!-- Total $BASECAT distributed. The ticker is the one symbol() returns on
+         Base — "Basecat", which the copy writes as $BASECAT. -->
     <article class="stat" data-metric="distributed">
       <div class="stat__body">
-        <h2 class="stat__label">Total rewards distributed</h2>
-        <p class="stat__value"><span data-value="distributed"><span class="dots" role="img" aria-label="Loading"><i></i><i></i><i></i></span></span><span class="stat__unit">tokens</span></p>
+        <h2 class="stat__label">Total $BASECAT distributed</h2>
+        <p class="stat__value"><span data-value="distributed"><span class="dots" role="img" aria-label="Loading"><i></i><i></i><i></i></span></span><span class="stat__unit">BASECAT</span></p>
         <p class="stat__sub stat__sub--lead" data-chip-for="distributedUsd"><b data-value="distributedUsd"><span class="dots" role="img" aria-label="Loading"><i></i><i></i><i></i></span></b></p>
       </div>
       <span class="stat__icon" aria-hidden="true">
@@ -232,7 +231,7 @@
         <h2 class="stat__label">Total fees collected</h2>
         <!-- Dollars when the reward token can be priced, the token amount when
              it cannot — an index token need not trade anywhere. -->
-        <p class="stat__value"><span data-value="fees"><span class="dots" role="img" aria-label="Loading"><i></i><i></i><i></i></span></span><span class="stat__unit" data-unit-for="fees" hidden>tokens</span></p>
+        <p class="stat__value"><span data-value="fees"><span class="dots" role="img" aria-label="Loading"><i></i><i></i><i></i></span></span><span class="stat__unit" data-unit-for="fees" hidden>BASECAT</span></p>
         <p class="stat__note">90% to holder rewards</p>
       </div>
       <span class="stat__icon" aria-hidden="true">
@@ -333,8 +332,8 @@
       </span>
       <div class="fact__body">
         <h2 class="fact__label">Token supply</h2>
-        <p class="fact__value">— <span class="fact__accent">$—</span></p>
-        <p class="fact__sub">⚠ supply and ticker from the discovery run</p>
+        <p class="fact__value">1,000,000,000 <span class="fact__accent">$PURR</span></p>
+        <p class="fact__sub">(1B Total Supply)</p>
       </div>
     </div>
 
@@ -363,8 +362,8 @@
       </span>
       <div class="fact__body">
         <h2 class="fact__label">Token</h2>
-        <p class="fact__value"><span class="fact__accent">$—</span></p>
-        <p class="fact__sub">⚠ name from the discovery run</p>
+        <p class="fact__value"><span class="fact__accent">$PURR</span></p>
+        <p class="fact__sub">PURRINTER</p>
       </div>
     </div>
 
@@ -394,7 +393,7 @@
 <!-- ?v= is the cache buster: run `node scripts/stamp.mjs` on every deploy,
      which moves every ?v= here and `version` in config.js together. Skip it
      and a CDN keeps serving the previous config.js and app.js. -->
-<script src="config.js?v=17"></script>
-<script src="assets/js/app.js?v=17"></script>
+<script src="config.js?v=2"></script>
+<script src="assets/js/app.js?v=2"></script>
 </body>
 </html>

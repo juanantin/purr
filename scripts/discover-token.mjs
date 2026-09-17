@@ -48,13 +48,15 @@ const ENDPOINTS = [
 /* Capability, not weather: this node will never answer, so the next one is
    tried at once rather than after three polite retries.
 
-   The last two patterns are a node ADVERTISING a hard cap — "You can make
-   eth_getLogs requests with up to a 10 block range". Narrowing is the wrong
+   The last patterns are a node ADVERTISING a hard cap. Each public endpoint
+   words it differently — "up to a 10 block range" on one, "eth_getLogs is
+   limited to 0 - 50 blocks range" on another — which is why this matches
+   several shapes rather than one. Narrowing is the wrong
    answer to that: this scan covers 342,000 blocks, which at ten a request is
    thirty-four thousand requests, and the halving would give up long before
    reaching a window that small anyway. Another endpoint is the answer, and
    there are six more in the list. */
-const CANNOT = /not supported|unsupported|method not found|pruned|not available|header not found|missing trie node|HTTP (40[1-5])|unauthorized|forbidden|up to a \d+ block range|block range should work/i;
+const CANNOT = /not supported|unsupported|method not found|pruned|not available|header not found|missing trie node|HTTP (40[1-5])|unauthorized|forbidden|up to a \d+ block range|block range should work|limited to \d+ ?- ?\d+ blocks?|max(?:imum)? (?:of )?\d+ blocks?/i;
 
 /* "pruned history unavailable" belongs here, not in the caller's hands: it is
    a statement about THIS NODE's retention, not about the request, so the right

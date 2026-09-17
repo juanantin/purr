@@ -1,8 +1,8 @@
 # Making this yours
 
-This is the checklist for pointing the site at a token, and this repo is
-**part-way down it**: step 1's addresses are in, step 0 has not been run yet.
-Work down from step 0.
+This is the checklist for pointing the site at a token. For $PURR steps 0–1
+and 3 are done — read them as the record of what was set and why — and what
+remains is step 2 (artwork) and step 4 (the deployment URL).
 
 After step 1 the page is already correct for your token; everything after that
 is branding and live figures.

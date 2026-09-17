@@ -9,7 +9,7 @@ window.SITE_CONFIG = {
   /* Build stamp. Shown in the ?debug=1 panel, so you can confirm which version
      a browser actually has rather than guessing at a cache. Bump it together
      with the ?v= on the script tags in index.html whenever you deploy. */
-  version: '1',
+  version: '2',
 
   /* ---- Token ---------------------------------------------------------- */
 
@@ -18,14 +18,15 @@ window.SITE_CONFIG = {
   // without it.
   contractAddress: '0x5D55Cf4E75f942eFf7817b5d6bB9a343188D5CE4',
 
-  // The token holders are paid in — the quote side of the pair. Used to price
-  // "total distributed" in USD when the rewards source doesn't give a USD
-  // figure itself, so the sub-line under that card depends on it.
-  // ⚠ TO BE FILLED by .github/workflows/discover.yml, which reads it off the
-  // chain. Never inherited from a sibling token: $BLUE's reward token has 18
-  // decimals and $BOX's has 8, and assuming either published a right answer
-  // at the wrong scale.
-  rewardTokenAddress: null,
+  // $BASECAT, the token holders are paid in — the quote side of the pair, and
+  // what thestonks.exchange's /api/coins entry names as this token's quote.
+  // Used to price "total distributed" in USD when the rewards source doesn't
+  // give a USD figure itself, so the sub-line under that card depends on it.
+  // Read off Base rather than inherited: symbol() "Basecat", name()
+  // "Basecat", decimals() 18, corroborated by the platform's own
+  // quote_decimals. $BOX's reward token returns 8 — the reading is the point,
+  // not the answer.
+  rewardTokenAddress: '0xB2000000000000000000004c27f6523082f41D01',
 
   // Free, keyless, CORS-enabled. Used as the last price source, because it
   // covers tokens DexScreener has no pair for — an index token among them.
@@ -34,9 +35,12 @@ window.SITE_CONFIG = {
   chain: 'base',    // DexScreener chain slug
   chainId: 8453,    // EVM chain id
 
-  // The block this token launched at. The chain scan starts here; nothing
-  // relevant happened before it. ⚠ TO BE FILLED from the discovery run.
-  launchBlock: null,
+  // The block $PURR launched at — 2026-09-17T14:59:43Z, a few hours before
+  // this site was built. The chain scan starts here; nothing relevant
+  // happened before it. Two independent sources agree: the platform's
+  // /api/coins block_number, and a timestamp search for the pool's own
+  // pairCreatedAt.
+  launchBlock: 51433918,
 
   /* How the reward token is recognised among everything that touches the
      distributor. Matched case-insensitively against each token's own symbol(),
@@ -46,9 +50,10 @@ window.SITE_CONFIG = {
 
      Matched as a substring, because a platform's wrapper often decorates the
      ticker it wraps — $BOX's reward token answers "AMZNc", not "AMZN", and an
-     exact comparison would have missed it. ⚠ TO BE FILLED from the discovery
-     run's symbol() reading. */
-  rewardTokenSymbol: null,
+     exact comparison would have missed it. Here symbol() reads "Basecat" —
+     note the case, which is why the match is case-insensitive as well as
+     partial; the copy on the page writes it as $BASECAT. */
+  rewardTokenSymbol: 'Basecat',
 
   /* Holders' share of what leaves the rewards index — the rest is the
      protocol's cut, so the outflow is NOT the distributed figure on its own.
@@ -72,23 +77,26 @@ window.SITE_CONFIG = {
      reports another token's market cap, liquidity and volume. Leave them null
      and the search by contract address is used instead: correct, if slower. */
   contracts: {
-    /* ⚠ ALL TO BE FILLED by the discovery run. Until then the page searches
-       DexScreener by contract address, which is correct — just slower — while
-       a WRONG pool here would silently report another token's market cap,
-       liquidity and volume. */
-    pool: null,
+    /* The trading pair: PURR/Basecat on Uniswap v3, from /api/coins and
+       corroborated by DexScreener resolving the same pair from the contract
+       address alone. Named here because DexScreener is asked about THIS pool
+       before it searches, so a token with more than one pool is otherwise a
+       coin flip on every load. */
+    pool: '0xA7B17145150bC4715259DB393dF766540a12933E',
     rewardPool: null,
-    // Where trading fees accrue. SHARED BY EVERY TOKEN on the platform, so it
-    // is never summed: doing that reports the whole platform's fees as this
-    // token's. Recorded only so it can be excluded from the holder count.
-    feeLocker: null,
+    /* Where trading fees accrue. SHARED BY EVERY TOKEN on the platform — this
+       is byte-for-byte the locker $BOX and $BLUE use, which is now three
+       tokens' worth of proof — so it is never summed: doing that reports the
+       whole platform's fees as this token's. Recorded only so it can be
+       excluded from the holder count. */
+    feeLocker: '0x71D1D363176723f85d98B8B430DF33cde89f0A7f',
     /* The distributor holders are paid from — per token, and the only one of
        these that is this token's alone. Not derivable on chain: it is a
-       routing decision. The owner's Stockify panel link names
-       0xc4970d4c7d34efa79c45f1b828acd71d978ca891, and on $BLUE that address
-       and /api/fee-routing's answer were the same one — the discovery run
-       confirms it here rather than assuming the pattern holds. */
-    rewardsIndex: null,
+       routing decision, and /api/fee-routing reports this token's as
+       "rewards" with this index. It is the same address the owner's Stockify
+       panel link names, checked rather than assumed. Read by the indexer, not
+       by the page. */
+    rewardsIndex: '0xC4970d4C7D34efa79C45f1B828acD71D978CA891',
   },
 
   /* ---- Links ---------------------------------------------------------- */

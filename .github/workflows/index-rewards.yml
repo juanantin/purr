@@ -4,13 +4,17 @@ name: Index rewards
 # token holders. State lives in data/rewards-state.json, so each run resumes
 # where the last one stopped — a first backfill may take a few runs.
 #
-# ⚠ THE SCHEDULE IS OFF while worker/src/config.js still carries nulls.
-# A run against an unset rewardsIndex sums nothing and publishes nulls every
-# quarter hour — indistinguishable, on the page, from a site that is broken.
-# scripts/index-rewards.mjs refuses to scan in that state anyway; this is the
-# second lock. Turn the cron back on in the same commit that fills in TOKENS,
-# CONTRACTS, START_BLOCK, both decimals and HOLDER_SHARE, and commit
-# data/rewards-state.json seeded with cursor = START_BLOCK at the same time.
+# THE SCHEDULE IS ON. worker/src/config.js is real — TOKENS, CONTRACTS
+# (rewardsIndex included), START_BLOCK and both decimals were read from the
+# network by .github/workflows/discover.yml, not carried over from a sibling.
+#
+# data/rewards-state.json is committed alongside it, seeded with cursor =
+# START_BLOCK (51433918). Both halves matter. loadState() falls back to
+# START_BLOCK only when that file is ABSENT, so a present file with a cursor
+# of 0 is read as gospel and scans Base from genesis. And the file is the ONLY
+# thing carrying the backfill between runs, since Actions runners are
+# ephemeral: gitignore it and every run restarts from the seed. Both failures
+# publish nulls and look exactly like a broken site.
 #
 # This exists because a phone should not have to read 375,000 blocks of Base
 # to see three numbers. The browser scan needs dozens of RPC calls and about a
@@ -20,18 +24,18 @@ name: Index rewards
 # refinement rather than the only source.
 
 on:
-  # schedule:
-  #   # Deliberately off the :00/:15/:30/:45 boundary — GitHub's scheduler is
-  #   # heavily oversubscribed there and delays runs the longest.
-  #   #
-  #   # ⚠ Not a guarantee. Measured on the sibling repo: a newly added cron
-  #   # produced ZERO runs in three hours, workflow active and on the default
-  #   # branch. GitHub delays and outright DROPS scheduled runs under load.
-  #   # The site degrades rather than breaks when that happens — each
-  #   # visitor's browser scans the chain itself and outranks this file, and
-  #   # the market metrics do not defer to it at all. Push to one of the paths
-  #   # below to force a refresh.
-  #   - cron: '7,22,37,52 * * * *'
+  schedule:
+    # Deliberately off the :00/:15/:30/:45 boundary — GitHub's scheduler is
+    # heavily oversubscribed there and delays runs the longest.
+    #
+    # ⚠ Not a guarantee. Measured on the sibling repo: a newly added cron
+    # produced ZERO runs in three hours, workflow active and on the default
+    # branch. GitHub delays and outright DROPS scheduled runs under load. The
+    # site degrades rather than breaks when that happens — each visitor's
+    # browser scans the chain itself and outranks this file, and the market
+    # metrics do not defer to it at all. Push to one of the paths below to
+    # force a refresh.
+    - cron: '7,22,37,52 * * * *'
   # Also on push to its own inputs. GitHub's scheduler routinely delays a
   # newly added cron by half an hour or more, and dispatching by hand needs a
   # permission not every token carries — neither is a good reason for the site

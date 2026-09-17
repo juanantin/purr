@@ -1,30 +1,15 @@
 /* ==========================================================================
-   What the indexer watches, on Base.
+   What the indexer watches — $PURR on Base.
    --------------------------------------------------------------------------
-   ⚠ INCOMPLETE. Everything null below is filled in from a run of
-   .github/workflows/discover.yml (scripts/discover-token.mjs), which asks the
-   network the questions this sandbox cannot:
+   Every address here was read from the network by .github/workflows/
+   discover.yml (scripts/discover-token.mjs) rather than carried over from the
+   token this site was copied from.
 
-     TOKENS.KEX        the reward token — the quote side of the deepest pair
-     KEX_DECIMALS      READ FROM CHAIN, never assumed. Two sibling sites
-                       disagree on this — $BLUE's reward token returns 18 and
-                       $BOX's returns 8 — and each was published at the wrong
-                       scale until it was actually read. STR and KEX stay two
-                       constants even when they agree.
-     CONTRACTS.pool    corroborated by DexScreener resolving the same pair from
-                       the contract address alone
-     CONTRACTS.rewardsIndex
-                       NOT derivable on chain — a routing decision. From
-                       /api/fee-routing?pairs=<token>:<feeLocker>, checked
-                       against the owner's Stockify panel link.
-     START_BLOCK       the token's first block. Left null the scan would start
-                       at genesis and never converge.
-     HOLDER_SHARE      from this token's own Stockify panel.
-
-   The schedule in .github/workflows/index-rewards.yml stays commented out
-   until they are all real, and data/rewards-state.json is committed seeded
-   with START_BLOCK in the same commit — a present state file with a cursor of
-   0 is read as gospel and scans Base from genesis.
+   ⚠ Which on-chain flow is "fees collected" versus "distributed" is still not
+   self-evident: reconcile against what thestonks.exchange and
+   stockify.finance publish for $PURR before trusting a number —
+   scripts/panel-probe.mjs prints both side by side. On $BLUE they agreed to
+   five decimal places, which is the bar.
    ========================================================================== */
 
 export const CHAIN_ID = 8453;                    // Base
@@ -32,25 +17,29 @@ export const CHAIN_ID = 8453;                    // Base
 export const TOKENS = {
   // The token people buy
   STR: '0x5D55Cf4E75f942eFf7817b5d6bB9a343188D5CE4',
-  // The reward token holders are paid in — the quote side of the pair
-  KEX: null,
+  // The reward token holders are paid in — $BASECAT, the quote side of the
+  // pair. symbol() "Basecat", name() "Basecat", read on chain.
+  KEX: '0xB2000000000000000000004c27f6523082f41D01',
 };
 
 export const CONTRACTS = {
-  // The trading pair
-  pool: null,
-  // Where trading fees accrue. This locker is SHARED BY EVERY COIN on the
-  // platform, so no stream may sum it: doing so reports the whole platform's
-  // fees as this token's.
-  feeLocker: null,
-  // The distributor holders are paid from. Per token — which is what makes
+  // The trading pair — PURR/Basecat on Uniswap v3.
+  pool: '0xA7B17145150bC4715259DB393dF766540a12933E',
+  // Where trading fees accrue. SHARED BY EVERY COIN on the platform — the
+  // same address $BOX and $BLUE use — so no stream may sum it: doing so
+  // reports the whole platform's fees as this token's.
+  feeLocker: '0x71D1D363176723f85d98B8B430DF33cde89f0A7f',
+  // The distributor holders are paid from, from /api/fee-routing, which
+  // reports this token's routing as "rewards". Per token — which is what makes
   // summing it this token's flows rather than the platform's.
-  rewardsIndex: null,
+  rewardsIndex: '0xC4970d4C7D34efa79C45f1B828acD71D978CA891',
 };
 
-// The block this token launched at. Nothing relevant happened before it, so
-// the scan starts here rather than at genesis.
-export const START_BLOCK = null;
+// The block $PURR launched at, from /api/coins — and independently from a
+// timestamp search for the pool's own pairCreatedAt, which lands on the same
+// block. Nothing relevant happened before it, so the scan starts here rather
+// than at genesis.
+export const START_BLOCK = 51433918;
 
 /* Decimals, per token, READ FROM EACH CONTRACT rather than assumed. Two
    constants, never one: on $BOX they differed — its reward token's decimals()
@@ -58,7 +47,7 @@ export const START_BLOCK = null;
    2.5244695737e-9, every digit right and the scale out by ten billion. A
    token that is "obviously 18" is exactly the one nobody checks. */
 export const STR_DECIMALS = 18;
-export const KEX_DECIMALS = null;
+export const KEX_DECIMALS = 18;   // Basecat's own decimals(), read on chain
 
 /* Everything that has to be real before a scan means anything. index-rewards
    and the worker both refuse to run while this list is non-empty, because the

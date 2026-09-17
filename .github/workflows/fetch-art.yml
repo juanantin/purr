@@ -1,0 +1,78 @@
+name: Fetch the token's artwork
+
+# thestonks.exchange publishes the image and banner a token was launched with,
+# as IPFS URLs in its /api/coins entry. This pulls them into images/src/ so the
+# site's own poster and icons can be derived from them without anyone having to
+# find and re-upload the files.
+#
+# Run by pushing to this file. Whatever it fetches is the LAUNCH artwork — if
+# the owner has something better, theirs wins and this is just a floor.
+
+on:
+  push:
+    paths:
+      - .github/workflows/fetch-art.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Pull the artwork the token launched with
+        run: |
+          set -euo pipefail
+          mkdir -p images/src
+          TOKEN=$(node -e "
+            const fs=require('fs'); const w={};
+            new Function('window', fs.readFileSync('config.js','utf8'))(w);
+            process.stdout.write(w.SITE_CONFIG.contractAddress.toLowerCase());
+          ")
+          curl -sSfL "https://www.thestonks.exchange/api/coins" -o /tmp/coins.json
+          node -e "
+            const fs=require('fs');
+            const list=JSON.parse(fs.readFileSync('/tmp/coins.json','utf8'));
+            const rows=Array.isArray(list)?list:(list.coins||list.data||list.items||[]);
+            const c=rows.find(r=>JSON.stringify(r).toLowerCase().includes('$TOKEN'));
+            if(!c){ console.error('token not found in /api/coins'); process.exit(1); }
+            fs.writeFileSync('/tmp/urls.txt', [c.image,c.banner].filter(Boolean).join('\n'));
+            console.log('image :', c.image);
+            console.log('banner:', c.banner);
+          "
+          i=0
+          while read -r url; do
+            i=$((i+1))
+            [ -z "$url" ] && continue
+            # The extension is not in the URL — IPFS CIDs carry no suffix — so
+            # it comes from what the server says it served.
+            type=$(curl -sSIL "$url" | awk 'tolower($1)=="content-type:"{print tolower($2)}' | tail -1 | tr -d '\r')
+            case "$type" in
+              image/png)  ext=png ;;
+              image/jpeg) ext=jpg ;;
+              image/webp) ext=webp ;;
+              image/gif)  ext=gif ;;
+              video/mp4)  ext=mp4 ;;
+              *)          ext=bin ;;
+            esac
+            name=$([ "$i" = "1" ] && echo mark || echo banner)
+            curl -sSfL "$url" -o "images/src/launch_${name}.${ext}"
+            echo "saved images/src/launch_${name}.${ext}  ($type)"
+          done < /tmp/urls.txt
+          ls -la images/src
+
+      - name: Commit whatever arrived
+        run: |
+          set -u
+          if git diff --quiet -- images/; then echo "no change"; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/
+          git commit -m "chore: pull the launch artwork from the platform [skip ci]"
+          git push origin HEAD:"$GITHUB_REF_NAME"
