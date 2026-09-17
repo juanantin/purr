@@ -9,23 +9,23 @@
     "afterwards.",
     "",
     "Written only when meta.synced is true. A scan short of the head publishes",
-    "nulls, which render as em dashes \u2014 the honest answer when the total is not",
+    "nulls, which render as em dashes — the honest answer when the total is not",
     "yet known, and better than a number that would understate it.",
     "",
     "Nulls here are the launch state, not a fault: the indexer has not run yet."
   ],
-  "totalDistributed": null,
-  "totalDistributedUsd": null,
-  "totalFeesCollected": null,
-  "totalFeesTokens": null,
-  "holders": null,
-  "marketCap": null,
-  "liquidity": null,
-  "volume24h": null,
-  "updatedAt": null,
+  "totalDistributed": 9131.810757183714,
+  "totalDistributedUsd": 156.79319070084438,
+  "totalFeesCollected": 189.4812304759164,
+  "totalFeesTokens": 11035.598746413301,
+  "holders": 84,
+  "marketCap": 18081,
+  "liquidity": 12868.15,
+  "volume24h": 58481.97,
+  "updatedAt": "2026-09-17T18:57:58.253Z",
   "meta": {
-    "synced": false,
-    "blocksBehind": null,
-    "kexPriceUsd": null
+    "synced": true,
+    "blocksBehind": 0,
+    "kexPriceUsd": 0.01717
   }
 }
