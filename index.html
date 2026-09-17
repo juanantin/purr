@@ -48,10 +48,10 @@
 
      The ?v= below is what makes a browser let go of the icon it has cached;
      node scripts/stamp.mjs moves all of them together. -->
-<link rel="icon" href="favicon.ico?v=7" sizes="any">
-<link rel="icon" type="image/png" href="images/favicon.png?v=7">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=7">
-<link rel="manifest" href="site.webmanifest?v=7">
+<link rel="icon" href="favicon.ico?v=8" sizes="any">
+<link rel="icon" type="image/png" href="images/favicon.png?v=8">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=8">
+<link rel="manifest" href="site.webmanifest?v=8">
 
 <!-- One face, five weights. 800 is not decoration: the wordmark and the
      section headings are set in it, and Inter's 700 is visibly lighter than
@@ -71,7 +71,7 @@
       media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 
-<link rel="stylesheet" href="assets/css/styles.css?v=7">
+<link rel="stylesheet" href="assets/css/styles.css?v=8">
 </head>
 <body>
 
@@ -93,8 +93,8 @@
 
     <video
       class="hero__media" id="hero-video"
-      poster="images/hero_poster.webp?v=7"
-      data-src="images/purr_header.mp4?v=7"
+      poster="images/hero_poster.webp?v=8"
+      data-src="images/purr_header.mp4?v=8"
       width="672" height="448"
       autoplay muted loop playsinline preload="none"
       aria-label="PURRINTER — the printer that goes purrrrr on $BASECAT."></video>
@@ -148,37 +148,39 @@
           <p class="hero__lede">Trade. Generate fees.<br>Holders earn $BASECAT.<br>Simple as that.</p>
 
           <!-- ===================== ACTIONS ===================== -->
-          <!-- Labelled now, not icon-only. The clipboard square in
-               particular was a mystery without one, and the label is what
-               makes the three read as a row of controls rather than as
-               decoration over the artwork. -->
+          <!-- Icon-only. The names do not disappear with the labels, they
+               stop being PAINTED: each button keeps its name in an .sr-only
+               span, so a screen reader still announces "Copy CA" rather than
+               "button", and title= gives a sighted visitor the same word on
+               hover. A control that announces nothing is unusable without
+               sight, and the clipboard square is the one nobody can guess. -->
           <nav class="actions" aria-label="Token links">
 
-            <a class="btn" id="link-x" href="https://x.com/purrinter_base" target="_blank" rel="noopener noreferrer">
+            <a class="btn" id="link-x" href="https://x.com/purrinter_base" title="X (Twitter)" target="_blank" rel="noopener noreferrer">
               <!-- The X mark, drawn as a filled glyph rather than loaded as an image -->
               <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M17.53 3h3.1l-6.77 7.73L21.83 21h-6.24l-4.89-6.39L5.11 21H2l7.24-8.27L2.17 3h6.4l4.42 5.84L17.53 3Zm-1.09 16.13h1.72L7.63 4.78H5.79l10.65 14.35Z"/>
               </svg>
-              <span class="btn__label">X (Twitter)</span>
+              <span class="sr-only">X (Twitter)</span>
             </a>
 
-            <a class="btn" id="link-chart" href="#" target="_blank" rel="noopener noreferrer">
+            <a class="btn" id="link-chart" href="#" title="Chart" target="_blank" rel="noopener noreferrer">
               <svg class="btn__icon btn__icon--stroke" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M4.4 19.6h15.2"/>
                 <path d="M6.6 19.6v-5"/>
                 <path d="M12 19.6V9.8"/>
                 <path d="M17.4 19.6V5.4"/>
               </svg>
-              <span class="btn__label">Chart</span>
+              <span class="sr-only">Chart</span>
             </a>
 
             <div class="ca-wrap">
-              <button class="btn" id="copy-ca" type="button">
+              <button class="btn" id="copy-ca" type="button" title="Copy CA">
                 <svg class="btn__icon btn__icon--stroke" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <path d="M9.4 9.4h9.2v9.2H9.4z"/>
                   <path d="M14.6 9.4V5.4H5.4v9.2h4"/>
                 </svg>
-                <span class="btn__label">Copy CA</span>
+                <span class="sr-only">Copy CA</span>
               </button>
 
               <div class="toast" id="copy-toast" role="status" aria-live="polite">
@@ -376,7 +378,7 @@
     <!-- WebP, not the supplied PNG: same 2172×724, 111KB against 1.69MB.
          alt="" because the type over it says everything it says — a screen
          reader that announced it as well would read the slogan twice. -->
-    <img class="foot__img" src="images/footer.webp?v=7" alt=""
+    <img class="foot__img" src="images/footer.webp?v=8" alt=""
          width="2172" height="724" loading="lazy" decoding="async">
 
     <!-- Everything below sits ON the artwork: the two slogans up where the
@@ -415,7 +417,7 @@
 <!-- ?v= is the cache buster: run `node scripts/stamp.mjs` on every deploy,
      which moves every ?v= here and `version` in config.js together. Skip it
      and a CDN keeps serving the previous config.js and app.js. -->
-<script src="config.js?v=7"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="config.js?v=8"></script>
+<script src="assets/js/app.js?v=8"></script>
 </body>
 </html>
