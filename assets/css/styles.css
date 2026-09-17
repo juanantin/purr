@@ -369,16 +369,23 @@ a { color: inherit; text-decoration: none; }
      alone — no re-tuning nine values and hoping they still agree.
 
      1 is the mockup read against the viewport: 6.25vw is its own 64px at its
-     own 1024px width. .8 is what it wants once the band is cropped to 2.2:1
-     rather than left at the mockup's 3:2 — the type is sized off the WIDTH
-     and the band lost a third of its HEIGHT, so at 1 the wordmark came out
-     at 14% of the frame where the mockup has it at 10%.
+     own 1024px width. But the band here is cropped to 2.2:1 rather than left
+     at the mockup's 3:2, and the type is sized off the WIDTH while the band
+     lost a third of its HEIGHT — so matching the mockup means matching the
+     ratio that survives the crop, which is the wordmark against the BAND:
+
+       mockup   64px wordmark in a 670px band   = 9.6%
+       scale 1                                  = 13.7%
+       scale .8                                 = 11.0%
+       scale .7                                 =  9.6%   ← the mockup
+
+     .7 is not a taste call, it is that measurement.
 
      Floors, no ceilings. A ceiling would stop a control growing while the
      artwork behind it kept going, which is the drift this block exists to
      prevent; the floors are there because 1.46vw is 11px on an 800px window
      and a label is for reading. */
-  :root { --hero-scale: .8; }
+  :root { --hero-scale: .7; }
 
   .hero__copy { padding-bottom: 5.5vw; }   /* 12% of the frame's height */
 
@@ -647,17 +654,25 @@ a { color: inherit; text-decoration: none; }
    drifting off it.
    ========================================================================== */
 
-.foot { margin: 0; }
+/* The picture's own bottom-edge colour, sampled from it: the mean of its last
+   row is rgb(199,213,248), and that row barely varies across the width. On a
+   phone the content runs on BELOW the image rather than over it, and this is
+   what it runs on to — so the page ends in the floor of the artwork instead
+   of in a white strip. */
+.foot {
+  margin: 0;
+  background: #c7d5f8;
+}
 
-/* Cropped to a band rather than shown at its own 3:1. At full ratio the
-   blocks sit in the bottom third and the top half is empty sky, which pushes
-   the type off the artwork and onto plain blue; taking 23% off the top brings
-   the blocks up into frame, which is where the mockup has them. The crop
-   comes off the TOP only — the floor and its reflection are the bottom of the
-   composition and cutting them would leave the blocks floating. */
+/* Its own 3:1, uncropped. The band was cropped to 3.9:1 to lift the blocks
+   and put "cats build higher" on one of them — but it now has to hold the two
+   ecosystem lockups and the fine print as well, and 3:1 is the TALLEST this
+   picture can be without `cover` cropping the SIDES instead of the top, which
+   is where both BASE blocks live. So the slogan sits on the sky above the
+   blocks and the lockups sit on the floor below them. */
 .foot__art {
   position: relative;
-  aspect-ratio: 3.9 / 1;
+  aspect-ratio: 3 / 1;
   overflow: hidden;
 }
 
@@ -703,7 +718,7 @@ a { color: inherit; text-decoration: none; }
    overlay exists at, so it never binds. */
 .foot__left {
   left: 28px;
-  top: 6%;
+  top: 7%;
   font-size: clamp(15px, 2vw, 38px);
   letter-spacing: -.02em;
 }
@@ -720,6 +735,7 @@ a { color: inherit; text-decoration: none; }
   text-align: center;
   /* vw for the same reason as .foot__left — it shares that band. */
   font-size: clamp(12px, 1.45vw, 20px);
+  top: 30%;
   letter-spacing: .04em;
   line-height: 1.32;
 }
@@ -730,21 +746,30 @@ a { color: inherit; text-decoration: none; }
    Ecosystem
    ========================================================================== */
 
+/* On the floor of the artwork, not under it. pointer-events comes back on
+   here: the overlay turns them off so the picture is not covered by an
+   invisible sheet, but these two are links. */
 .eco {
+  position: absolute;
+  left: 50%;
+  /* Down on the floor, which starts at 78% of the picture. At 15% the block
+     straddled the horizon and the lockups sat on mid-blue sky. */
+  bottom: 11%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 680px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: 24px;
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 34px 0 6px;
+  pointer-events: auto;
 }
 
 .eco__half {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
+  gap: clamp(8px, .9vw, 16px);
   padding: 4px 8px;
   text-align: center;
   transition: transform .18s ease;
@@ -753,7 +778,7 @@ a { color: inherit; text-decoration: none; }
 .eco__half:hover { transform: translateY(-2px); }
 
 .eco__kicker {
-  font-size: 13.5px;
+  font-size: clamp(11px, .94vw, 17px);
   color: var(--ink-2);
   line-height: 1.3;
 }
@@ -761,15 +786,24 @@ a { color: inherit; text-decoration: none; }
 /* Both lockups have the resolution to run large — 550×112 and 800×261 — so
    they are sized by height and left to keep their own ratios. The
    Stonks.Exchange bar is much the wider of the two, which makes it read
-   smaller at a matched height, so it gets a little more. */
-.eco__logo { height: 42px; width: auto; }
-.eco__logo--stonks { height: 48px; }
+   smaller at a matched height, so it gets a little more.
+
+   In vw, because they now sit ON the artwork: the band's height is width/3,
+   so a fixed px block slides up and down the picture as the viewport changes
+   — 22% of the band at 1024 and 12% at 1920, which is the difference between
+   standing on the floor and floating in the sky. */
+.eco__logo { height: clamp(28px, 2.9vw, 54px); width: auto; }
+.eco__logo--stonks { height: clamp(32px, 3.3vw, 62px); }
 
 .foot__fine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2%;
   margin: 0;
-  padding: 26px 0 40px;
   text-align: center;
-  color: var(--muted);
+  /* --muted is pitched for white; on the floor's pale blue it goes soft. */
+  color: #5d6a84;
   font-size: 13px;
 }
 
@@ -799,29 +833,84 @@ a { color: inherit; text-decoration: none; }
    becomes a banner and the copy moves underneath it, on white — which is
    where every other word on the page already sits. */
 @media (max-width: 760px) {
-  /* The frame stops being a fixed-ratio window and becomes a plain column:
-     clip, then copy. Leaving the ratio and the overflow:hidden on it while
-     the overlay went static is what CLIPPED the copy — the wordmark, the
-     buttons and 90px of the dashboard were all inside a 260px box. */
+  /* The copy stays OVER the clip on a phone, as it does everywhere else.
+
+     It has to be a PORTRAIT frame to do that — 3:2 at 390px is a 260px band
+     and the copy is about 250px, so there is no room beside the machine and
+     none under it either. 4:5 gives the height; `cover` then crops the WIDTH
+     rather than the height, so the vertical composition is the clip's own —
+     sky on top, the printer through the middle, coins along the bottom.
+
+     And it needs the scrim. There is no arrangement that puts this much type
+     over this picture and keeps it readable unaided: the sky is only the top
+     third, and everything below it is a saturated blue machine. So the
+     gradient is clear across the top, where the ears and the wordmark on the
+     machine are worth seeing, and opaque by the bottom, where the words are.
+     That is the trade — the artwork keeps its head, the copy gets its
+     contrast. */
   .hero__frame {
-    aspect-ratio: auto;
-    max-height: none;
-    overflow: visible;
-    background: transparent;
+    /* 2:3 rather than 4:5. The copy is a fixed ~250px whatever the frame
+       does, so a TALLER frame is the only thing that shrinks the share of
+       the picture it covers: 43% here against 51%. That is what buys the top
+       of the machine — ears, nameplate, sky — a clear 57% to live in. */
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: #bfdcf7;
   }
 
   .hero__media {
-    position: static;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
+    height: 100%;
+    object-fit: cover;
+    /* 2:3 shows 44.4% of the clip's width, and WHICH 44.4% decides whether
+       the machine's own nameplate collides with the overlay wordmark.
+
+         nameplate, in the clip   53% - 74% of its width
+         overlay wordmark, at 390px   ends at 67% of the screen
+
+       38% opens the window at 21.1%-65.5%, which puts the nameplate's first
+       letters at 72% of the frame — clear to the right of where the wordmark
+       ends, instead of underneath it. No amount of scrim fixes an overlap:
+       the nameplate is white type on blue, so at 93% white it still ghosts
+       through as pale blue letters and reads "PURRINTERNTER". */
+    object-position: 38% 50%;
   }
 
-  .hero__overlay { position: static; display: block; }
+  .hero__overlay { position: absolute; inset: 0; display: flex; }
+
+  /* Clear to 32%, then up fast. Two things set that number. The machine
+     wears its OWN "PURRINTER" nameplate at 42-52% of the clip's height, and
+     the overlay wordmark lands on exactly that — at a gentler ramp the two
+     read as one word, "PURRINTERNTER". And the vertical cannot be moved to
+     separate them: `cover` on a portrait box crops the WIDTH, so the clip's
+     vertical composition is fixed no matter what ratio or object-position is
+     used. So the scrim has to do it — clear through the sky and the ears,
+     which are the 0-42% worth looking at, and opaque across the nameplate.
+
+     It can stay moderate because object-position, not opacity, is what
+     keeps the machine's nameplate off the wordmark — see above. Driving it
+     to 95% to hide that collision was the other way, and it cost the whole
+     machine: the first version faded in at 26% and was 88% opaque by 62%,
+     which left a white box with words on it. */
+  .hero__overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0) 31%,
+      rgba(255, 255, 255, .62) 45%,
+      rgba(255, 255, 255, .90) 57%,
+      rgba(255, 255, 255, .96) 72%);
+  }
 
   .hero__rail {
-    display: block;
-    padding: 22px 20px 4px;
+    position: relative;   /* over the scrim */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px 18px 20px;
   }
 
   .hero__copy { padding-bottom: 0; }
@@ -846,33 +935,38 @@ a { color: inherit; text-decoration: none; }
   .step { padding: 0 8px; }
   .step + .step { border-left: 0; border-top: 1px solid var(--line-strong); padding-top: 24px; }
 
-  /* The footer type comes off the artwork for the same reason as the hero's:
-     3:1 at 390px is a 130px band, and three lines of display type do not go
-     into it. The picture stays as the band it is, and the words sit above it
-     where they can be read. */
+  /* The footer type comes off the artwork here, unlike the hero's. The hero
+     could be made portrait to hold its copy; this picture cannot. 3:1 at
+     390px is a 130px band, and anything SQUARER than 3:1 makes `cover` crop
+     the SIDES rather than the top — the two BASE blocks are at the far left
+     and right edges, so a 2:1 box took the middle 67%, which is nothing but
+     sky and floor, and the footer rendered as 195px of nothing.
+
+     So the picture stays the band it is and the words run on beneath it — on
+     .foot's background, which IS the picture's own bottom-edge colour. There
+     is no white under the footer; there is no seam either. */
   .foot__art {
     aspect-ratio: auto;
     overflow: visible;
   }
 
-  /* Its own 3:1, uncropped — a 130px band at phone width. Anything SQUARER
-     than 3:1 makes `cover` crop the sides instead of the top, and the two
-     BASE blocks are at the far left and right edges: a 2:1 box took the
-     middle 67% of the picture, which is nothing but sky and floor, and the
-     footer rendered as 195px of white. */
   .foot__img {
     height: auto;
     aspect-ratio: 3 / 1;
   }
 
   .foot__overlay { position: static; }
-  .foot__rail { padding: 30px 20px 26px; text-align: center; }
+  .foot__rail { height: auto; padding: 26px 20px 30px; text-align: center; }
 
   .foot__left,
-  .foot__mid {
+  .foot__mid,
+  .eco,
+  .foot__fine {
     position: static;
     left: auto;
+    right: auto;
     top: auto;
+    bottom: auto;
     transform: none;
     text-align: center;
   }
@@ -882,11 +976,10 @@ a { color: inherit; text-decoration: none; }
 
   .foot__mid { margin-top: 20px; font-size: 15px; }
 
-  /* Source order puts the artwork first; on a phone the words read first. */
-  .foot__art { display: flex; flex-direction: column-reverse; }
-
-  .eco { gap: 20px; padding-top: 28px; }
+  .eco { width: auto; margin: 30px auto 0; gap: 20px; }
   .eco__kicker { font-size: 12.5px; }
+
+  .foot__fine { margin-top: 28px; }
 }
 
 @media (max-width: 480px) {
@@ -918,7 +1011,7 @@ a { color: inherit; text-decoration: none; }
   .stat__sub { font-size: 12px; }
 
   .foot__left { font-size: 23px; }
-  .foot__fine { padding: 22px 0 32px; }
+  .foot__fine { margin-top: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

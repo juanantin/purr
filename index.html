@@ -48,10 +48,10 @@
 
      The ?v= below is what makes a browser let go of the icon it has cached;
      node scripts/stamp.mjs moves all of them together. -->
-<link rel="icon" href="favicon.ico?v=6" sizes="any">
-<link rel="icon" type="image/png" href="images/favicon.png?v=6">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=6">
-<link rel="manifest" href="site.webmanifest?v=6">
+<link rel="icon" href="favicon.ico?v=7" sizes="any">
+<link rel="icon" type="image/png" href="images/favicon.png?v=7">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=7">
+<link rel="manifest" href="site.webmanifest?v=7">
 
 <!-- One face, five weights. 800 is not decoration: the wordmark and the
      section headings are set in it, and Inter's 700 is visibly lighter than
@@ -71,7 +71,7 @@
       media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 
-<link rel="stylesheet" href="assets/css/styles.css?v=6">
+<link rel="stylesheet" href="assets/css/styles.css?v=7">
 </head>
 <body>
 
@@ -93,8 +93,8 @@
 
     <video
       class="hero__media" id="hero-video"
-      poster="images/hero_poster.webp?v=6"
-      data-src="images/purr_header.mp4?v=6"
+      poster="images/hero_poster.webp?v=7"
+      data-src="images/purr_header.mp4?v=7"
       width="672" height="448"
       autoplay muted loop playsinline preload="none"
       aria-label="PURRINTER — the printer that goes purrrrr on $BASECAT."></video>
@@ -374,37 +374,40 @@
 
   <div class="foot__art">
     <!-- WebP, not the supplied PNG: same 2172×724, 111KB against 1.69MB.
-         alt="" because the two lines of type over it say everything it says —
-         a screen reader that announced it as well would read the slogan
-         twice. -->
-    <img class="foot__img" src="images/footer.webp?v=6" alt=""
+         alt="" because the type over it says everything it says — a screen
+         reader that announced it as well would read the slogan twice. -->
+    <img class="foot__img" src="images/footer.webp?v=7" alt=""
          width="2172" height="724" loading="lazy" decoding="async">
 
+    <!-- Everything below sits ON the artwork: the two slogans up where the
+         sky is, then the two ecosystem lockups down on the floor, then the
+         fine print. The page ENDS at the bottom edge of this picture — there
+         is no white strip under it, and .foot carries the picture's own
+         bottom-edge colour so the phone layout, where the content runs on
+         below the image rather than over it, has nothing to butt against. -->
     <div class="foot__overlay">
       <div class="foot__rail">
         <p class="foot__left">Cats<br>build<br>higher<span class="rule" aria-hidden="true"></span></p>
         <p class="foot__mid">A brighter Base<br>together.<span class="rule rule--mid" aria-hidden="true"></span></p>
+
+        <!-- ===================== ECOSYSTEM ===================== -->
+        <div class="eco" aria-label="Ecosystem">
+
+          <a class="eco__half" id="link-launched" href="https://www.thestonks.exchange/" target="_blank" rel="noopener noreferrer">
+            <span class="eco__kicker">Launched in</span>
+            <img class="eco__logo eco__logo--stonks" src="images/stonkex_button.png" alt="Stonks.Exchange" width="550" height="112" loading="lazy" decoding="async">
+          </a>
+
+          <a class="eco__half" id="link-rewards" href="https://www.stockify.finance/indices/0xc4970d4c7d34efa79c45f1b828acd71d978ca891" target="_blank" rel="noopener noreferrer">
+            <span class="eco__kicker">Holders rewards powered by</span>
+            <img class="eco__logo" src="images/stockify_logo.png" alt="Stockify" width="800" height="261" loading="lazy" decoding="async">
+          </a>
+
+        </div>
+
+        <p class="foot__fine">Not financial advice. Crypto assets are volatile — do your own research.</p>
       </div>
     </div>
-  </div>
-
-  <!-- ===================== ECOSYSTEM ===================== -->
-  <div class="wrap">
-    <div class="eco" aria-label="Ecosystem">
-
-      <a class="eco__half" id="link-launched" href="https://www.thestonks.exchange/" target="_blank" rel="noopener noreferrer">
-        <span class="eco__kicker">Launched in</span>
-        <img class="eco__logo eco__logo--stonks" src="images/stonkex_button.png" alt="Stonks.Exchange" width="550" height="112" loading="lazy" decoding="async">
-      </a>
-
-      <a class="eco__half" id="link-rewards" href="https://www.stockify.finance/indices/0xc4970d4c7d34efa79c45f1b828acd71d978ca891" target="_blank" rel="noopener noreferrer">
-        <span class="eco__kicker">Holders rewards powered by</span>
-        <img class="eco__logo" src="images/stockify_logo.png" alt="Stockify" width="800" height="261" loading="lazy" decoding="async">
-      </a>
-
-    </div>
-
-    <p class="foot__fine">Not financial advice. Crypto assets are volatile — do your own research.</p>
   </div>
 
 </footer>
@@ -412,7 +415,7 @@
 <!-- ?v= is the cache buster: run `node scripts/stamp.mjs` on every deploy,
      which moves every ?v= here and `version` in config.js together. Skip it
      and a CDN keeps serving the previous config.js and app.js. -->
-<script src="config.js?v=6"></script>
-<script src="assets/js/app.js?v=6"></script>
+<script src="config.js?v=7"></script>
+<script src="assets/js/app.js?v=7"></script>
 </body>
 </html>
