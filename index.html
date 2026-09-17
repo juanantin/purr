@@ -107,6 +107,15 @@
         v.src = v.dataset.src;
         v.preload = 'auto';
         v.load();
+        // autoplay alone should be enough — the element is muted, which is
+        // what every autoplay policy actually gates on. But this path has
+        // never run before: the attribute has sat on an element with no
+        // source since the template was written, so nothing has ever proved
+        // a browser starts it. play() is one line and it fails SOFTLY: the
+        // rejection is caught, and what a visitor sees then is the poster,
+        // which is this clip's own first frame.
+        var started = v.play();
+        if (started && started.catch) started.catch(function () {});
       })();
     </script>
 
