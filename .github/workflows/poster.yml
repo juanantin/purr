@@ -1,0 +1,104 @@
+name: Derive the hero poster from the clip
+
+# images/purr_header.mp4 is the header, and a <video> shows NOTHING until it
+# has buffered — on a cold phone that is a blank 3:2 hole where the wordmark
+# should be. The poster fills it from the first byte.
+#
+# images/src/README.md states the rule this implements: "If a hero clip is
+# ever added, its first frame must be this poster, or the hand-off from poster
+# to playback jumps." So the poster is extracted FROM the clip rather than
+# derived from the launch banner — the banner is a different composition at a
+# different ratio (3:1 against the clip's 3:2), and using it would flash a
+# different picture on every arrival.
+#
+# It also strips the audio track. The hero is muted and looping, so the track
+# can never be heard; it is weight every visitor downloads to ignore. The
+# video stream is COPIED, not re-encoded, so the picture is bit-identical.
+#
+# Run by pushing to this file. The sandbox this is written in cannot do the
+# work: its Chromium is built without H.264 and the only ffmpeg on it is
+# Playwright's, configured --disable-everything but VP8 and PNG. A runner has
+# a full one.
+
+on:
+  push:
+    paths:
+      - .github/workflows/poster.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  poster:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: What the clip actually is
+        run: |
+          set -euo pipefail
+          ffmpeg -hide_banner -version | head -1
+          ffprobe -hide_banner -v error \
+            -show_entries stream=index,codec_type,codec_name,width,height,r_frame_rate,bit_rate \
+            -show_entries format=duration,size,bit_rate \
+            -of default=noprint_wrappers=1 images/purr_header.mp4
+
+      - name: First frame → images/hero_poster.webp
+        run: |
+          set -euo pipefail
+          # -frames:v 1 with no -ss: the FIRST frame, not a nearby keyframe.
+          # Seeking even a little lands on a different picture, and the whole
+          # point is that poster and frame 0 are the same image.
+          ffmpeg -hide_banner -loglevel error -y -i images/purr_header.mp4 \
+            -frames:v 1 -c:v libwebp -quality 88 -compression_level 6 \
+            images/hero_poster.webp
+          ls -l images/hero_poster.webp
+
+      - name: A contact sheet, so the clip can be looked at
+        run: |
+          set -euo pipefail
+          # TEMPORARY. The sandbox cannot decode H.264, so this is the only
+          # way to SEE what the header shows before writing text over it —
+          # which half of the frame is sky, where the printer sits, whether
+          # the clip carries a wordmark of its own. Deleted once read; it is
+          # a diagnostic, not an asset the page loads.
+          ffmpeg -hide_banner -loglevel error -y -i images/purr_header.mp4 \
+            -vf "fps=1,scale=336:-1,tile=3x4" -frames:v 1 -q:v 4 \
+            images/src/header_contact.jpg
+          ls -l images/src/header_contact.jpg
+
+      - name: Strip the dead audio track
+        run: |
+          set -euo pipefail
+          before=$(stat -c%s images/purr_header.mp4)
+          # -c:v copy: the picture is not re-encoded, so it cannot degrade.
+          # +faststart puts moov before mdat, so a browser can start playing
+          # from the first bytes instead of after the whole file arrives.
+          ffmpeg -hide_banner -loglevel error -y -i images/purr_header.mp4 \
+            -c:v copy -an -movflags +faststart /tmp/hero_muted.mp4
+          after=$(stat -c%s /tmp/hero_muted.mp4)
+          echo "audio strip: $before → $after bytes"
+          # Only take it if it really is smaller: a re-muxed file that GREW
+          # is a sign the copy did something unintended, and the original is
+          # then the safer thing to keep serving.
+          if [ "$after" -lt "$before" ]; then
+            mv /tmp/hero_muted.mp4 images/purr_header.mp4
+            ffprobe -hide_banner -v error -show_entries stream=codec_type \
+              -of csv=p=0 images/purr_header.mp4
+          else
+            echo "kept the original"
+          fi
+
+      - name: Commit
+        run: |
+          set -u
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Stage first, then ask: `git diff` alone does not see a new file,
+          # which is how fetch-art.yml once downloaded the banner and threw
+          # it away.
+          git add -A images/
+          if git diff --cached --quiet -- images/; then echo "no change"; exit 0; fi
+          git commit -m "chore: derive the hero poster from the header clip [skip ci]"
+          git push origin HEAD:"$GITHUB_REF_NAME"
