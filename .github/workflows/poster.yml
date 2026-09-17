@@ -78,6 +78,20 @@ jobs:
             images/src/header_contact.jpg
           ls -l images/src/header_contact.jpg
 
+      # images/footer.png as supplied is 1.69MB of PNG for a decorative band
+      # at the bottom of the page. A phone pays that in full to look at a
+      # picture of some blocks. WebP at the same 2172×724 — no downscale, so
+      # nothing is lost on a retina screen — is about a fifth of it.
+      #
+      # The PNG stays where it is: it is the original the owner uploaded, and
+      # images/src/README.md records that the served file derives from it.
+      - name: footer.png → images/footer.webp
+        run: |
+          set -euo pipefail
+          ffmpeg -hide_banner -loglevel error -y -i images/footer.png \
+            -c:v libwebp -quality 86 -compression_level 6 images/footer.webp
+          echo "footer: $(stat -c%s images/footer.png) → $(stat -c%s images/footer.webp) bytes"
+
       - name: Strip the dead audio track
         run: |
           set -euo pipefail
