@@ -42,7 +42,10 @@ jobs:
             const rows=Array.isArray(list)?list:(list.coins||list.data||list.items||[]);
             const c=rows.find(r=>JSON.stringify(r).toLowerCase().includes('$TOKEN'));
             if(!c){ console.error('token not found in /api/coins'); process.exit(1); }
-            fs.writeFileSync('/tmp/urls.txt', [c.image,c.banner].filter(Boolean).join('\n'));
+            // A TRAILING newline, deliberately: 'while read' drops a final line
+            // that has none, which is how the banner went missing on the
+            // first run while the image came through fine.
+            fs.writeFileSync('/tmp/urls.txt', [c.image,c.banner].filter(Boolean).map(u=>u+'\n').join(''));
             console.log('image :', c.image);
             console.log('banner:', c.banner);
           "
@@ -70,9 +73,13 @@ jobs:
       - name: Commit whatever arrived
         run: |
           set -u
-          if git diff --quiet -- images/; then echo "no change"; exit 0; fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add images/
+          # Stage FIRST, then ask. `git diff` only sees tracked files, so on
+          # the first run — when every fetched file is new — it reported "no
+          # change" and the job exited having downloaded the artwork and
+          # thrown it away.
+          git add -A images/
+          if git diff --cached --quiet -- images/; then echo "no change"; exit 0; fi
           git commit -m "chore: pull the launch artwork from the platform [skip ci]"
           git push origin HEAD:"$GITHUB_REF_NAME"
