@@ -68,11 +68,12 @@ jobs:
       - name: A contact sheet, so the clip can be looked at
         run: |
           set -euo pipefail
-          # TEMPORARY. The sandbox cannot decode H.264, so this is the only
-          # way to SEE what the header shows before writing text over it —
-          # which half of the frame is sky, where the printer sits, whether
-          # the clip carries a wordmark of its own. Deleted once read; it is
-          # a diagnostic, not an asset the page loads.
+          # A diagnostic, not an asset the page loads — kept because the
+          # constraint that made it necessary is permanent: the sandbox this
+          # repo is edited from cannot decode H.264, so this is the only way
+          # to SEE what the header shows before writing type over it. It is
+          # what established that the clip carries its own BASE mark in the
+          # top-left corner, which the page therefore does not draw.
           ffmpeg -hide_banner -loglevel error -y -i images/purr_header.mp4 \
             -vf "fps=1,scale=336:-1,tile=3x4" -frames:v 1 -q:v 4 \
             images/src/header_contact.jpg

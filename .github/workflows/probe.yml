@@ -64,22 +64,6 @@ jobs:
           MOBILE: '1'
         run: node scripts/page-probe.mjs
 
-      # The DEPLOYED site, which is the only one a visitor sees. Everything
-      # above runs against this working tree and so proves the code is right,
-      # never that it is live — the repo is not served from GitHub Pages; it
-      # deploys to Vercel, at the URL below — the repo's own homepage field,
-      # which Vercel wrote when it linked the project. A SITE_URL repository
-      # variable overrides it, for a preview deployment or a custom domain.
-      #
-      # This is the ONLY pass that proves what a visitor is served. Everything
-      # above runs against the working tree and proves the code is right,
-      # never that it is live — a distinction that hid a broken deploy for a
-      # full day on the first site built from this template.
-      - name: Probe the live site
-        env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://purr-puce.vercel.app' }}
-        run: node scripts/page-probe.mjs
-
       # Reading these logs through the API returns only the TAIL of the job,
       # and the browser steps are thousands of lines of CORS and retry noise —
       # so anything printed first is unreadable by the time anyone asks for
@@ -98,3 +82,38 @@ jobs:
       - name: Read the platform's own panels
         if: always()
         run: node scripts/panel-probe.mjs
+
+      # LAST, and the reason is the paragraph above: this step's output is the
+      # one nobody had ever read. It sat seventh of nine, under two thousand
+      # lines of browser noise, and the API returns only the tail.
+      #
+      # It also waits for the deploy first. Vercel builds AFTER the push that
+      # triggered this run, so probing immediately reads the PREVIOUS build
+      # and reports a pass for code that is not live — which is precisely the
+      # failure the step exists to catch, dressed up as a success. So it polls
+      # config.js until the version it serves is the version this commit
+      # carries, and says which one it got either way.
+      - name: Probe the live site
+        if: always()
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://purr-puce.vercel.app' }}
+        run: |
+          set -uo pipefail
+          WANT=$(node -e "
+            const fs=require('fs'); const w={};
+            new Function('window', fs.readFileSync('config.js','utf8'))(w);
+            process.stdout.write(String(w.SITE_CONFIG.version));
+          ")
+          echo "this commit is build ${WANT}; waiting for ${SITE_URL} to serve it"
+          GOT=''
+          for i in $(seq 1 40); do
+            GOT=$(curl -sS --max-time 15 "${SITE_URL}/config.js?probe=$i" \
+                  | sed -n "s/.*version: *'\([0-9]*\)'.*/\1/p" | head -1)
+            if [ "$GOT" = "$WANT" ]; then echo "build ${GOT} is live after ~$((i*6))s"; break; fi
+            sleep 6
+          done
+          if [ "$GOT" != "$WANT" ]; then
+            echo "⚠ still serving build '${GOT}' after 240s, not '${WANT}'."
+            echo "  The probe below therefore describes the PREVIOUS deploy."
+          fi
+          node scripts/page-probe.mjs

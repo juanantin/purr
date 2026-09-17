@@ -2,28 +2,32 @@
    Styles
 
    --accent is the logo's own blue, #0038F0, read off the mark rather than
-   guessed.
+   guessed. It is also the page's only colour: every figure, every heading and
+   every icon is either that blue, near-black ink, or grey. Nothing else is
+   introduced, which is what holds the dashboard, the three steps and the two
+   pieces of artwork together as one page.
 
-   --page is NOT sampled from the banner here, and that is a departure worth
-   naming. The rule exists so a hero with a flat ground can bleed into the
-   page with no seam; this banner has no single ground — blue sky at the top,
-   a pale floor at the bottom — so there is nothing to match. It reads as a
-   framed image instead, which is what it is.
+   The surfaces are WHITE on white. There is nowhere lighter to go, so a card
+   does not separate itself by being brighter — it separates by a hairline
+   border and a soft shadow underneath. That is the mockup's own logic and it
+   is why the borders are 1px and the shadows are wide and faint rather than
+   dark.
 
-   No radius anywhere: right angles are the whole of the pixel-art idea, and
-   depth comes from --stack, a shadow drawn as two offset blocks with no blur
-   over one soft shadow that does the lifting.
+   NO RADIUS: --r-card and --r-btn are both 0 and every box that could take a
+   corner reads them, so the whole page rounds or stays square from two lines
+   here rather than from thirty edits.
    ========================================================================== */
 
 :root {
-  /* Surfaces & ink — --page is sampled from the banner, so they match exactly */
-  --page:        #fcfcfc;
+  /* Surfaces & ink */
+  --page:        #ffffff;
   --surface:     #ffffff;
+  --band:        #f6f9fd;   /* the one step down, behind the three steps */
   --ink:         #0d1220;
-  --ink-2:       #3b4557;
-  --muted:       #78839a;
-  --line:        #e3e8f2;
-  --line-strong: #ccd6e6;
+  --ink-2:       #33405a;
+  --muted:       #7c889d;
+  --line:        #e6ecf6;
+  --line-strong: #d4deed;
 
   /* The logo's own blue */
   --accent:      #0038f0;
@@ -32,34 +36,24 @@
 
   --base-blue:   #0052ff;
 
-  /* Shape. The banner is a bull built out of cubes and a wordmark extruded in
-     hard steps, and the page is cut to match: NO radius anywhere. Right
-     angles are the whole of the pixel-art idea — a rounded corner is an
-     anti-aliased curve, which is the one thing voxels never have.
+  /* Shape. The artwork is blocks with hard edges and no fillets, and the page
+     is cut to match: right angles everywhere.
 
-     Notching the corners was the first attempt and it was worse: at card size
-     it read as a cinema ticket, and on a 52px icon the four cuts met in the
-     middle and turned the tile into a plus sign.
-
-     Depth instead comes from --stack, a shadow drawn as two offset blocks
-     with no blur — the same staircase the wordmark's bevel steps down — over
-     one soft shadow that does the actual lifting. */
-  --face:        linear-gradient(176deg, #ffffff 0%, #fdfeff 46%, #f4f8ff 100%);
-  /* The page is the banner's own near-white, so a card cannot separate itself
-     by being lighter — there is nowhere lighter to go. It separates by EDGE
-     and by DEPTH instead: a definite 2px outline, then two solid blocks
-     stepping away from it. Both are pitched to stay quiet on white; a darker
-     stack turns the dashboard into a comic panel. */
-  --face-edge:   #ccdaf1;
-  --stack:       4px 4px 0 #dfe8fa, 8px 8px 0 #edf2fd, 0 16px 26px rgba(13, 18, 32, .08);
-  --stack-lift:  5px 5px 0 #c9dbfd, 10px 10px 0 #e4edfe, 0 22px 36px rgba(11, 83, 232, .18);
-
+     Both tokens below are read by the cards, the buttons and the toast, so
+     setting them to 10px is the whole of "make it rounded" — there is no
+     other corner on the page. */
   --r-btn:       0px;
   --r-card:      0px;
 
-  --shadow-card: 0 1px 2px rgba(20,17,15,.03), 0 6px 18px rgba(30,60,120,.06);
+  /* Depth. A card is white on white, so the shadow is the only thing holding
+     it off the page: one tight shadow for the edge and one wide, faint one
+     for the lift. Dark shadows turn a six-card row into a comic strip, so
+     both are pitched under 10% and tinted blue rather than grey — a neutral
+     shadow on this much white reads as dirt. */
+  --card-shadow: 0 1px 2px rgba(17, 38, 86, .05), 0 10px 24px rgba(17, 38, 86, .07);
+  --card-lift:   0 2px 4px rgba(17, 38, 86, .07), 0 18px 34px rgba(11, 60, 200, .13);
 
-  --wrap:        1000px;
+  --wrap:        1040px;
 
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
 
@@ -72,19 +66,11 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  /* The containing block for .cubes, which spans the document rather than
-     the viewport. */
-  position: relative;
   font-family: var(--font);
   color: var(--ink);
-  background-color: var(--page);
+  background: var(--page);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-
-  /* The faint isometric cubes behind everything. Drawn rather than shipped as
-     an image so it stays crisp at any zoom and costs no request. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='104' viewBox='0 0 120 104'%3E%3Cg fill='none' stroke='%232f6fed' stroke-opacity='.06' stroke-width='1'%3E%3Cpath d='M30 0 60 17v34L30 68 0 51V17Z'/%3E%3Cpath d='M0 17l30 17 30-17M30 34v34'/%3E%3Cpath d='M90 52l30 17v34l-30 17-30-17V69Z'/%3E%3Cpath d='M60 69l30 17 30-17M90 86v34'/%3E%3C/g%3E%3C/svg%3E");
-  background-position: center top;
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -97,8 +83,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--r-btn);
 }
 
-/* Present to screen readers, absent on screen — the banner carries the
-   wordmark as pixels, so the page still needs a real heading. */
+/* Present to screen readers, absent on screen */
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;
@@ -115,102 +100,191 @@ a { color: inherit; text-decoration: none; }
   padding: 0 20px;
 }
 
-/* ==========================================================================
-   Hero
-   ========================================================================== */
-
-.hero {
-  padding: 8px 20px 0;
-  overflow: hidden;   /* contains the mobile overscan below */
+/* The short blue bar that sits under a heading. Used three times — the hero
+   tagline and both lines of type on the footer artwork — so it is one class
+   rather than three ::after rules. */
+.rule {
+  display: block;
+  width: 54px;
+  height: 5px;
+  margin: 18px 0 0;
+  background: var(--accent);
 }
 
-.hero__inner {
-  max-width: var(--wrap);
-  margin: 0 auto;
+.rule--mid { margin: 14px auto 0; }
+
+/* ==========================================================================
+   Hero
+
+   Full-bleed, with the copy laid over the clip. The artwork puts the printer
+   on the RIGHT and sky on the left, so the type takes the left half and the
+   machine is never covered.
+
+   The frame runs at the clip's own 3:2 and is NEVER cropped. It was capped
+   at 76vh first, and the cap has to go: the clip carries a small BASE mark in
+   its top-left corner, and a vertical crop eats it — but only at some sizes,
+   because a vh cap depends on the window's HEIGHT. Between roughly 1030 and
+   1140px wide the crop lands part-way through that mark and serves a clipped
+   fragment of it. Uncropped, the corner mark is either there or the layout is
+   the phone one; there is no width at which it is half there.
+
+   The cost is a tall header on a wide monitor — 3:2 at 1440px is 960px — and
+   that is the mockup's own proportion rather than an accident of this
+   stylesheet.
+   ========================================================================== */
+
+.hero { position: relative; }
+
+.hero__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;    /* the clip's own ratio — written here and on the
+                             element; change both together or object-fit
+                             starts cropping */
+  overflow: hidden;
+  /* The sky's own blue, so the frame is never a white flash before the
+     poster decodes. */
+  background: #bfdcf7;
 }
 
 .hero__media {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;          /* beats the element's height attribute */
-  aspect-ratio: 3 / 1;   /* the banner's own ratio, and the poster's. Encoded
-                            here as well as on the element, so change both
-                            together or object-fit will crop. */
+  height: 100%;
   object-fit: cover;
-  background: var(--page);
+  object-position: center;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+/* space-between, so the eyebrow holds the top and the copy hangs from the
+   BOTTOM of the frame. That is where the mockup puts it, and on this artwork
+   it is also the readable half: the clip's left third is saturated sky at the
+   top and pale blocks and floor lower down, so type that starts at 44% sits
+   on the pale part. Bottom-anchored it stays there at every height the frame
+   can take, which a top margin in vh does not. */
+.hero__rail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  /* Inset a little more than .wrap's 20px, so the wordmark sits just
+     inside the dashboard's left edge rather than flush with it. */
+  padding: 24px clamp(20px, 4vw, 40px) 28px;
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.hero__onchain {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The rule that closes the line, as in the mockup's top-right corner */
+.hero__onchain i {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background: var(--accent);
+}
+
+/* Off the very bottom of the frame: flush against the edge the buttons read
+   as falling out of the picture. */
+.hero__copy { padding-bottom: clamp(6px, 5vh, 54px); }
+
+/* The wordmark. 800 rather than 700: the artwork's own lettering is heavy,
+   and at this size the lighter weight reads as a different logo. Tracking is
+   pulled in because Inter's default spacing at 5rem is loose enough to look
+   accidental. */
+.hero__wordmark {
+  margin: 0;
+  font-size: clamp(40px, 6.2vw, 74px);
+  font-weight: 800;
+  line-height: .96;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero__tagline {
+  margin: 14px 0 0;
+  font-size: clamp(16px, 1.9vw, 22px);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero__lede {
+  margin: 22px 0 0;
+  font-size: clamp(14px, 1.45vw, 16.5px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6f7d92;
 }
 
 /* ==========================================================================
-   Actions — the three buttons under the banner
+   Actions — the three labelled buttons under the hero copy
    ========================================================================== */
 
-.actions { padding: 20px 20px 34px; }
-
-.actions__inner {
-  max-width: var(--wrap);
-  margin: 0 auto;
+.actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-
-/* Square, because there is no label to set the width any more: the padding
-   that framed "X (Twitter)" would leave a lone 19px glyph adrift in a lozenge
-   three times its width. The .sr-only span inside contributes no box.
-
-   Cut and lit like the cards, and sitting on a hard 4px block of its own —
-   which is what makes the press below feel like a real key travelling into
-   its own shadow rather than a rectangle changing colour. */
-.btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   gap: 10px;
-  min-height: 52px;
-  width: 52px;
-  padding: 0;
-  border: 2px solid var(--face-edge);
-  background: var(--face);
-  box-shadow: 4px 4px 0 #e9effc, 0 8px 14px rgba(13, 18, 32, .07);
+  margin: 28px 0 0;
+}
+
+/* Icon over label, on a white tile. Labelled rather than icon-only: the
+   clipboard square was a guess without one, and over artwork a bare glyph
+   reads as part of the picture rather than as a control. */
+.btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 98px;
+  min-height: 68px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-btn);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
   font: inherit;
-  font-size: 15.5px;
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
+  color: var(--ink-2);
   cursor: pointer;
-  transition: transform .14s ease, filter .14s ease;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
 }
-
-/* The lit top edge, as on the cards. */
-.btn::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 2px;
-  background: #fff;
-}
-
-.btn > * { position: relative; z-index: 1; }
 
 .btn:hover {
-  transform: translate(-2px, -2px);
-  border-color: #c2d5f6;
-  box-shadow: 6px 6px 0 var(--accent-soft), 0 14px 20px rgba(11, 83, 232, .18);
-}
-.btn:hover .btn__icon { color: var(--accent-deep); }
-
-/* Travels INTO its own shadow: the button moves exactly as far as the block
-   beneath it shrinks, so the two read as one object being pressed rather than
-   as a rectangle changing colour. */
-.btn:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0 0 0 #e9effc, 0 2px 4px rgba(13, 18, 32, .12);
+  transform: translateY(-2px);
+  border-color: #c9d8f5;
+  box-shadow: var(--card-lift);
 }
 
-.btn__icon { width: 19px; height: 19px; flex: none; color: var(--ink); }
+.btn:active { transform: translateY(0); box-shadow: var(--card-shadow); }
+
+.btn__icon { width: 21px; height: 21px; flex: none; color: var(--accent); }
 
 .btn__icon--stroke {
   fill: none;
@@ -220,8 +294,17 @@ a { color: inherit; text-decoration: none; }
   stroke-linejoin: round;
 }
 
+.btn__label {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .005em;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+
 /* Copied toast */
-.ca-wrap { position: relative; }
+.ca-wrap { position: relative; display: inline-flex; }
 
 .toast {
   position: absolute;
@@ -249,82 +332,154 @@ a { color: inherit; text-decoration: none; }
 .toast__check { width: 15px; height: 15px; color: #7ddb6a; flex: none; }
 .toast.is-error .toast__check { color: #ff8a7a; }
 
+/* ---- overlay mode: the hero composition, scaled -------------------------
+   Above the phone breakpoint the type sits ON the artwork, and the artwork is
+   a full-bleed picture — so it grows with the viewport WIDTH. Type on a px
+   clamp does not, and the two drift apart: at 1440 the clip is a 2.14x
+   blow-up of a 672px frame while the wordmark has stopped at its 74px
+   ceiling, so the printer and the coin pile grow into the column and the lede
+   ends up lying across a coin.
+
+   Every length here is vw instead, so the whole composition is the same
+   drawing at 820px and at 2560px — the relationship between the wordmark, the
+   copy and the machine cannot drift, because there is nothing fixed left to
+   drift against. The ratios are the mockup's own: 6.2vw of its 1024px width
+   is its 64px wordmark.
+
+   padding-bottom is 8vw = 12% of the frame's height (the frame is 3:2, so its
+   height is 66.7vw), which lands the buttons at 85% of the hero exactly as
+   the mockup does.
+   ------------------------------------------------------------------------ */
+@media (min-width: 761px) {
+  .hero__copy { padding-bottom: 8vw; }
+
+  /* Artwork-scale type: pure vw, no floor. It is lettering ON a picture and
+     it should behave like part of the picture. */
+  .hero__wordmark { font-size: 6.25vw; }
+  .hero__tagline  { font-size: 1.85vw; margin-top: 1vw; }
+  /* The one floor among the artwork-scale type: this is the only sentence
+     on the hero anyone has to READ, and pure 1.46vw put it at 11px on an
+     800px window. */
+  .hero__lede     { font-size: clamp(13px, 1.46vw, 40px); margin-top: 1.5vw; }
+
+  .hero__copy .rule {
+    width: 5vw;
+    height: .49vw;
+    min-height: 4px;
+    margin-top: 1.3vw;
+  }
+
+  /* Controls, and a floor on every one of them. These are things to read and
+     press, not brushwork: at 820px a bare .98vw label computes to 8px, and
+     the first version of this block shipped a 6.6px button label and a 38px
+     tap target. The floors bind only under about 1100px — at and above the
+     mockup's own 1024 the ratios are what carry. */
+  .hero__onchain { font-size: clamp(10px, 1.07vw, 16px); gap: clamp(8px, .9vw, 14px); }
+  .hero__onchain i { width: clamp(20px, 2.1vw, 34px); height: clamp(2px, .22vw, 4px); }
+
+  .actions { gap: clamp(8px, .78vw, 12px); margin-top: 2vw; }
+
+  .btn {
+    min-width: clamp(92px, 9vw, 150px);
+    min-height: clamp(62px, 6vw, 100px);
+    padding: clamp(10px, .9vw, 16px) clamp(12px, 1.1vw, 20px);
+    gap: clamp(6px, .6vw, 10px);
+  }
+
+  .btn__icon  { width: clamp(19px, 1.95vw, 30px); height: clamp(19px, 1.95vw, 30px); }
+  .btn__label { font-size: clamp(10.5px, .98vw, 15px); }
+}
+
 /* ==========================================================================
-   Dashboard cards
+   Dashboard — six cards across, icon over label over figure
    ========================================================================== */
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 34px 0 0;
 }
 
-/* Label and figure left, icon right — the tile is the card's only colour. The
-   card sits on its own staircase of shadow blocks and steps further out of
-   the page on hover, moving up AND left so it travels along the diagonal the
-   stack is offset on rather than sliding across it. */
 .stat {
-  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 24px 26px;
-  border: 2px solid var(--face-edge);
-  background: var(--face);
-  box-shadow: var(--stack);
+  text-align: center;
+  padding: 20px 12px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
-/* The lit top edge. Every voxel in the artwork has one, and it is the whole
-   difference between a flat rectangle and a moulded surface. */
-.stat::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 2px;
-  background: #fff;
-}
-
 .stat:hover {
-  transform: translate(-2px, -3px);
-  border-color: #c2d5f6;
-  box-shadow: var(--stack-lift);
+  transform: translateY(-3px);
+  border-color: #c9d8f5;
+  box-shadow: var(--card-lift);
 }
 
-.stat__body { min-width: 0; }
+/* One spec for every glyph on the page that is not a button: a drawn outline
+   in the accent, no tile behind it. The mockup's icons sit directly on the
+   card — a filled block behind each one would put six more rectangles in a
+   row that already has six. */
+.stat__icon,
+.step__icon {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
 
+.stat__icon svg,
+.step__icon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Two lines' worth of room whether the label needs it or not, so all six
+   figures sit on one line across the row. Without this the cards with a
+   one-line label lift their figure 14px above the others. */
 .stat__label {
-  margin: 0 0 8px;
-  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6em;
+  margin: 10px 0 0;
+  font-size: 11px;
   font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
+  line-height: 1.3;
+  letter-spacing: .005em;
+  color: var(--ink-2);
 }
 
 .stat__value {
   display: flex;
   align-items: baseline;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  font-size: clamp(25px, 3.2vw, 32px);
+  gap: 5px;
+  margin: 4px 0 0;
+  font-size: clamp(17px, 1.75vw, 23px);
   font-weight: 700;
   letter-spacing: -.02em;
   line-height: 1.15;
-  color: var(--ink);
-  word-break: break-word;
+  color: var(--accent);
   /* Same-width digits, so a figure that ticks up does not jostle the label
      beside it — and so the six cards line up as a set rather than as six
      independent numbers. */
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .stat__unit {
-  font-size: .62em;
-  font-weight: 500;
+  font-size: .6em;
+  font-weight: 600;
   letter-spacing: 0;
   color: var(--ink-2);
 }
@@ -332,79 +487,17 @@ a { color: inherit; text-decoration: none; }
 /* No source for this metric yet — don't dress a dash up as a figure */
 .stat__value .is-empty { color: var(--muted); font-weight: 500; }
 
+/* The dollar value of the reward-token figure above it, in parentheses. */
 .stat__sub {
-  margin: 6px 0 0;
-  font-size: 16px;
+  margin: 3px 0 0;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--ink-2);
+  color: var(--muted);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .stat__sub b { font-weight: 500; }
-
-/* On the payout card the dollar figure is the one a reader can size: a bare
-   reward-token amount means nothing without knowing what a unit is worth — so
-   it runs nearly as large as the token amount above it. */
-.stat__sub--lead {
-  margin-top: 4px;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -.01em;
-}
-
-/* Where the fee actually goes. Static text, not a figure. */
-.stat__note {
-  margin: 7px 0 0;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--accent);
-  letter-spacing: .01em;
-}
-
-/* Values are numeric strings that swap in — keep them from reflowing */
-.stat__value, .stat__sub b { font-variant-numeric: tabular-nums; }
-
-/* One icon spec for the whole set: a tan disc with a drawn glyph inside */
-/* Not discs any more: square blue blocks, lit the way the voxels are — a
-   bright top face, a deeper bottom, a hard block of shadow beneath. The icon
-   inside goes white, which is what turns a pale badge into the card's one
-   piece of colour. */
-.stat__icon,
-.fact__icon {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(174deg, #4f88ff 0%, var(--accent) 52%, #0a45c8 100%);
-  /* A voxel, read straight off the artwork: lit top face, shadowed bottom,
-     and a hard block of its own colour underneath so it stands off the card
-     rather than lying on it. */
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .5),
-              inset 0 -2px 0 rgba(6, 34, 96, .38),
-              3px 3px 0 #dbe6fb;
-}
-
-.stat__icon svg,
-.fact__icon svg {
-  width: 26px;
-  height: 26px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Base keeps its own blue, being a network mark rather than one of the set —
-   so its block stays pale and its stroke stays blue. */
-.fact__icon--base {
-  background: linear-gradient(174deg, #ffffff 0%, var(--accent-soft) 100%);
-  box-shadow: inset 0 0 0 2px #cfe0ff;
-}
-.fact__icon--base svg { stroke: var(--base-blue); }
 
 /* Blinking "…" placeholder, shown until the first data load resolves */
 .dots {
@@ -438,7 +531,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 16px 0 0;
+  margin: 18px 0 0;
   font-size: 12.5px;
   letter-spacing: .01em;
   color: var(--muted);
@@ -469,121 +562,167 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ==========================================================================
-   Trailer — the long clip, under the dashboard
+   How it works — three steps, divided by hairlines
 
-   Sized by its own 16:9 rather than by what it downloads: preload="none"
-   means the element has no intrinsic size until someone presses play, and
-   without a ratio here the page would reflow under the reader at that moment.
+   Not cards. The dashboard above is already a row of six boxes, and putting
+   three more under it turns the whole page into one grid; the divider does
+   the same separating work without adding a shape.
    ========================================================================== */
 
-.trailer {
-  margin: 30px 0 0;
+.steps-band {
+  margin: 44px 0 0;
+  padding: 44px 0 48px;
+  background: var(--band);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
-.trailer__media {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  border: 2px solid var(--face-edge);
-  box-shadow: var(--stack);
-  /* The clip fades through black, so the box it sits in is black too — a
-     white letterbox would flash at the edges on every fade. */
-  background: #000;
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-@media (max-width: 620px) {
-  .trailer { margin-top: 22px; }
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4px 22px;
+}
+
+.step + .step { border-left: 1px solid var(--line-strong); }
+
+.step__icon svg { width: 34px; height: 34px; }
+
+.step__title {
+  margin: 14px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.step__text {
+  margin: 10px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #6f7d92;
 }
 
 /* ==========================================================================
-   Token facts — one card, three fixed properties
+   Footer artwork
+
+   images/footer.png is 2172×724 (3:1) and already carries the BASE mark on
+   its right-hand block, so the type only goes where the picture is empty:
+   the left block's face, and the sky over the middle.
+
+   Both blocks are positioned in PERCENTAGES of the image, not in pixels, so
+   they stay on the same part of the artwork at every width instead of
+   drifting off it.
    ========================================================================== */
 
-.facts {
+.foot { margin: 0; }
+
+/* Cropped to a band rather than shown at its own 3:1. At full ratio the
+   blocks sit in the bottom third and the top half is empty sky, which pushes
+   the type off the artwork and onto plain blue; taking 23% off the top brings
+   the blocks up into frame, which is where the mockup has them. The crop
+   comes off the TOP only — the floor and its reflection are the bottom of the
+   composition and cutting them would leave the blocks floating. */
+.foot__art {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-  margin-top: 26px;
-  padding: 22px 26px;
-  border: 2px solid var(--face-edge);
-  background: var(--face);
-  box-shadow: var(--stack);
+  aspect-ratio: 3.9 / 1;
+  overflow: hidden;
 }
 
-.facts::before {
-  content: '';
+.foot__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+}
+
+.foot__overlay {
   position: absolute;
-  inset: 0 0 auto;
-  height: 2px;
-  background: #fff;
+  inset: 0;
+  pointer-events: none;
 }
 
-.fact {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
+.foot__rail {
+  position: relative;
+  height: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 28px;
 }
 
-/* Base keeps its own blue — it is a network mark, not part of the set */
-.fact__icon--base { background: transparent; }
-.fact__icon--base svg { stroke: var(--base-blue); stroke-width: 1.8; width: 30px; height: 30px; }
-
-.fact__body { min-width: 0; }
-
-.fact__label {
-  margin: 0 0 5px;
-  font-size: 11.5px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.fact__value {
+.foot__left,
+.foot__mid {
+  position: absolute;
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -.01em;
-  line-height: 1.25;
-  color: var(--ink);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1.04;
 }
 
-.fact__accent { color: var(--accent); }
-
-.fact__sub {
-  margin: 3px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.3;
+/* On the left block's face, ABOVE the BASE mark the artwork already has
+   there. */
+/* On the left block's face, above the BASE mark the artwork already has
+   there. The size is vw and the band's height is width/3.9, so the type and
+   the space it has to live in scale TOGETHER — the clearance over that mark
+   is then the same at every width. A px floor in the clamp is what broke it
+   first time: at 820px the band shrank to 210px while 19px type did not, and
+   "HIGHER" sat on top of the mark. The floor here is below the width this
+   overlay exists at, so it never binds. */
+.foot__left {
+  left: 28px;
+  top: 6%;
+  font-size: clamp(15px, 2vw, 38px);
+  letter-spacing: -.02em;
 }
+
+.foot__left .rule { width: 42px; height: 4px; margin-top: 8px; }
+
+/* Centred, low enough to sit on the pale part of the sky rather than the
+   saturated top — blue type on deep blue sky is the one placement in this
+   picture that does not read. */
+.foot__mid {
+  left: 50%;
+  top: 38%;
+  transform: translateX(-50%);
+  text-align: center;
+  /* vw for the same reason as .foot__left — it shares that band. */
+  font-size: clamp(12px, 1.45vw, 20px);
+  letter-spacing: .04em;
+  line-height: 1.32;
+}
+
+.foot__mid .rule { width: 40px; height: 4px; }
 
 /* ==========================================================================
    Ecosystem
    ========================================================================== */
 
 .eco {
-  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 20px;
-  margin: 44px auto 0;
-  max-width: 660px;
-  padding: 22px 24px 26px;
-  border: 2px solid var(--face-edge);
-  background: var(--face);
-  box-shadow: var(--stack);
+  gap: 24px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 34px 0 6px;
 }
 
 .eco__half {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 13px;
   padding: 4px 8px;
   text-align: center;
   transition: transform .18s ease;
@@ -601,122 +740,163 @@ a { color: inherit; text-decoration: none; }
    they are sized by height and left to keep their own ratios. The
    Stonks.Exchange bar is much the wider of the two, which makes it read
    smaller at a matched height, so it gets a little more. */
-.eco__logo { height: 44px; width: auto; }
-.eco__logo--stonks { height: 52px; }
+.eco__logo { height: 42px; width: auto; }
+.eco__logo--stonks { height: 48px; }
 
-/* ==========================================================================
-   Footer
-   ========================================================================== */
-
-.foot {
+.foot__fine {
+  margin: 0;
+  padding: 26px 0 40px;
   text-align: center;
   color: var(--muted);
   font-size: 13px;
-  padding: 34px 20px 40px;
 }
-
-.foot p { margin: 0; }
 
 
 /* ==========================================================================
    Responsive
    ========================================================================== */
 
-@media (max-width: 900px) {
-  .stats { gap: 14px; }
-  .stat { padding: 18px 20px; gap: 14px; }
-  .stat__icon, .fact__icon { width: 46px; height: 46px; }
-  .stat__icon svg, .fact__icon svg { width: 23px; height: 23px; }
-  .facts { gap: 20px; padding: 20px; }
+/* Six figures need about 150px each. Below that the row breaks to three and
+   then to two, rather than squeezing "12,482,390" to 11px. */
+@media (max-width: 1000px) {
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .stat__label { min-height: 0; }
 }
 
+@media (max-width: 860px) {
+  .step { padding: 4px 14px; }
+  .step__text { font-size: 13.5px; }
+  .eco__logo { height: 38px; }
+  .eco__logo--stonks { height: 42px; }
+}
+
+/* The overlay stops here. Below this width the hero copy cannot sit over the
+   clip: the wordmark, three lines of tagline, three of lede and a row of
+   buttons need more height than a 3:2 frame has at phone width, and cropping
+   the clip taller to make room takes the printer out of it. So the clip
+   becomes a banner and the copy moves underneath it, on white — which is
+   where every other word on the page already sits. */
 @media (max-width: 760px) {
-  .btn { min-height: 46px; padding: 0 18px; font-size: 14px; gap: 8px; }
-  .btn__icon { width: 17px; height: 17px; }
-
-  /* One fact per row, so the value never wraps under its own icon */
-  .facts { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-}
-
-@media (max-width: 620px) {
-  /* The hero drops its side padding and runs edge to edge, slightly
-     overscanning the banner's own margins so it reads as large as it can. */
-  .hero { padding: 4px 0 0; }
+  /* The frame stops being a fixed-ratio window and becomes a plain column:
+     clip, then copy. Leaving the ratio and the overflow:hidden on it while
+     the overlay went static is what CLIPPED the copy — the wordmark, the
+     buttons and 90px of the dashboard were all inside a 260px box. */
+  .hero__frame {
+    aspect-ratio: auto;
+    max-height: none;
+    overflow: visible;
+    background: transparent;
+  }
 
   .hero__media {
-    width: 106%;        /* eats the banner's own margins, not its content */
-    max-width: none;
-    margin-left: -3%;
+    position: static;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
   }
 
-  .actions { padding: 4px 14px 22px; gap: 10px; }
-  .actions__inner { gap: 10px; }
-  .btn { min-height: 46px; width: 46px; }
+  .hero__overlay { position: static; display: block; }
 
-  .wrap { padding: 0 14px; }
-
-  /* Two cards per row. At this width the label, the figure and a 42px disc
-     cannot share a line, so the card turns: the disc goes above the text and
-     the figure gets the card's full width instead of what the disc leaves. */
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-
-  .stat {
-    flex-direction: column-reverse;   /* markup keeps the disc last, for reading order */
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 14px 13px;
-    gap: 10px;
+  .hero__rail {
+    display: block;
+    padding: 22px 20px 4px;
   }
 
-  .stat__body { width: 100%; }
+  .hero__copy { padding-bottom: 0; }
 
-  .stat__label { font-size: 10.5px; letter-spacing: .05em; margin-bottom: 5px; }
+  .hero__wordmark { font-size: clamp(38px, 11.5vw, 56px); }
+  .hero__tagline { font-size: clamp(15px, 4.2vw, 19px); }
+  .hero__lede { font-size: 14.5px; margin-top: 18px; }
 
-  /* A figure is one word. The global break-word would hyphenate a market cap
-     across two lines mid-thousands ("$4,567,890." / "12"), so it is turned off
-     here and the type scales with the card instead. */
-  .stat__value {
-    font-size: clamp(15px, 4.6vw, 19px);
-    gap: 5px;
-    letter-spacing: -.01em;
-    white-space: nowrap;
-    word-break: normal;
+  .actions { margin-top: 22px; }
+
+  /* Two figures per row */
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 26px; }
+  .stat { padding: 16px 10px 18px; }
+  .stat__icon svg { width: 26px; height: 26px; }
+  .stat__label { font-size: 10.5px; margin-top: 8px; }
+  .stat__value { font-size: clamp(16px, 4.6vw, 20px); }
+
+  .steps-band { margin-top: 34px; padding: 32px 0 34px; }
+
+  /* One step per row, so the divider turns with it */
+  .steps { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .step { padding: 0 8px; }
+  .step + .step { border-left: 0; border-top: 1px solid var(--line-strong); padding-top: 24px; }
+
+  /* The footer type comes off the artwork for the same reason as the hero's:
+     3:1 at 390px is a 130px band, and three lines of display type do not go
+     into it. The picture stays as the band it is, and the words sit above it
+     where they can be read. */
+  .foot__art {
+    aspect-ratio: auto;
+    overflow: visible;
   }
-  .stat__unit { font-size: .66em; }
-  .stat__sub { font-size: 13px; }
-  .stat__sub--lead { font-size: 16px; margin-top: 3px; }
-  .stat__note { font-size: 11px; margin-top: 5px; }
 
-  .stat__icon { width: 34px; height: 34px; }
-  .stat__icon svg { width: 17px; height: 17px; }
-  .fact__icon { width: 42px; height: 42px; }
-  .fact__icon svg { width: 21px; height: 21px; }
+  /* Its own 3:1, uncropped — a 130px band at phone width. Anything SQUARER
+     than 3:1 makes `cover` crop the sides instead of the top, and the two
+     BASE blocks are at the far left and right edges: a 2:1 box took the
+     middle 67% of the picture, which is nothing but sky and floor, and the
+     footer rendered as 195px of white. */
+  .foot__img {
+    height: auto;
+    aspect-ratio: 3 / 1;
+  }
 
-  /* Stack the two ecosystem blocks */
-  .eco { grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 32px; padding: 18px 16px 20px; }
+  .foot__overlay { position: static; }
+  .foot__rail { padding: 30px 20px 26px; text-align: center; }
+
+  .foot__left,
+  .foot__mid {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    text-align: center;
+  }
+
+  .foot__left { font-size: 26px; }
+  .foot__left .rule { margin: 12px auto 0; }
+
+  .foot__mid { margin-top: 20px; font-size: 15px; }
+
+  /* Source order puts the artwork first; on a phone the words read first. */
+  .foot__art { display: flex; flex-direction: column-reverse; }
+
+  .eco { gap: 20px; padding-top: 28px; }
   .eco__kicker { font-size: 12.5px; }
-  .eco__logo { height: 34px; }
-  .eco__logo--stonks { height: 30px; }
-
-  .foot { padding: 26px 16px 32px; }
 }
 
-@media (max-width: 420px) {
-  .actions__inner { gap: 8px; }
-  .btn { min-height: 40px; padding: 0 11px; font-size: 12.5px; gap: 6px; }
-  .btn__icon { width: 15px; height: 15px; }
+@media (max-width: 480px) {
+  .wrap { padding: 0 14px; }
+  .hero__rail { padding: 18px 14px 4px; }
 
-  /* Two-up at 320px leaves ~140px a card. The turned card spends the disc's
-     space vertically rather than beside the figure, so it can stay — only the
-     type and the padding give. */
+  .chainmark__mark { width: 23px; height: 23px; }
+  .chainmark b { font-size: 17px; }
+  .hero__onchain { font-size: 10px; letter-spacing: .12em; gap: 8px; }
+  .hero__onchain i { width: 20px; }
+
+  /* Three buttons, one row, at 320px: the label is what sets the width, so
+     they share the row equally rather than wrapping one onto its own line. */
+  .actions { gap: 8px; }
+  .btn { flex: 1 1 0; min-width: 0; padding: 11px 8px; min-height: 62px; }
+  /* The clipboard button is wrapped in .ca-wrap (it needs a positioned
+     parent for the toast), so the WRAP is the flex item — without this the
+     other two grow and Copy CA stays at its label width. */
+  .ca-wrap { flex: 1 1 0; }
+  .ca-wrap .btn { width: 100%; }
+  .btn__label { font-size: 10.5px; }
+  .btn__icon { width: 19px; height: 19px; }
+
   .stats { gap: 8px; }
-  .stat { padding: 12px 11px; gap: 8px; }
-  .stat__icon { width: 30px; height: 30px; }
-  .stat__icon svg { width: 15px; height: 15px; }
-  .stat__label { font-size: 10px; letter-spacing: .04em; }
-  .stat__sub, .stat__sub--lead { white-space: nowrap; }
-  .legend { font-size: 11.5px; gap: 6px; }
-  .stat__sub--lead { font-size: 15px; }
+  .stat { padding: 14px 8px 16px; }
+  .stat__icon svg { width: 24px; height: 24px; }
+  .stat__label { font-size: 10px; line-height: 1.25; }
+  .stat__value { font-size: clamp(15px, 5vw, 19px); }
+  .stat__sub { font-size: 12px; }
+
+  .foot__left { font-size: 23px; }
+  .foot__fine { padding: 22px 0 32px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
