@@ -15,17 +15,17 @@
     "Nulls here are the launch state, not a fault: the indexer has not run yet."
   ],
   "totalDistributed": 11419.787814959886,
-  "totalDistributedUsd": 130.8707683594403,
-  "totalFeesCollected": 146.99543549264166,
+  "totalDistributedUsd": 139.0930155862114,
+  "totalFeesCollected": 156.23075081155108,
   "totalFeesTokens": 12826.826831818644,
   "holders": 53,
   "marketCap": 3912,
   "liquidity": 3783,
-  "volume24h": 19.09,
-  "updatedAt": "2026-10-03T18:38:58.887Z",
+  "volume24h": 7.89,
+  "updatedAt": "2026-10-03T21:51:27.930Z",
   "meta": {
     "synced": true,
     "blocksBehind": 0,
-    "kexPriceUsd": 0.01146
+    "kexPriceUsd": 0.01218
   }
 }
